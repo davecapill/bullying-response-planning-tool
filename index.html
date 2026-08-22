@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Bullying Response Planning Tool</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+  <main class="page-shell">
+
+
+    <!-- =================================================
+         LANDING PAGE
+         ================================================= -->
+
+    <section id="landingPage" class="landing-card">
+
+      <div class="hero">
+
+        <p class="eyebrow">
+          Evidence-informed decision support
+        </p>
+
+        <h1>
+          Bullying Response Planning Tool
+        </h1>
+
+        <p class="hero-intro">
+          The Bullying Response Planning Tool is an evidence-informed
+          decision-support resource designed to assist school leaders and
+          student support teams to systematically consider the circumstances
+          surrounding bullying behaviour, identify relevant protective,
+          preventative, teaching, response and recovery strategies, and
+          develop a tailored action plan.
+        </p>
+
+        <p class="hero-intro">
+          The tool supports professional judgement rather than replacing it,
+          and is intended to help schools consider responses for the student
+          experiencing bullying, the student engaging in bullying, peers,
+          families and the broader school environment.
+        </p>
+
+      </div>
+
+
+      <div class="important-note">
+
+        <strong>Important</strong>
+
+        <p>
+          This tool does not determine whether bullying has occurred,
+          prescribe disciplinary outcomes, replace school policy or
+          professional judgement, or provide clinical assessment.
+        </p>
+
+      </div>
+
+
+      <div class="continuum-link">
+
+        <p>
+          You can also view the full evidence-informed response continuum
+          that underpins this planning tool.
+        </p>
+
+        <a
+          href="Bullying_Response_Continuum.pdf"
+          target="_blank"
+          rel="noopener"
+          class="secondary-button"
+        >
+          View / Download Response Continuum
+        </a>
+
+      </div>
+
+
+      <div class="start-area">
+
+        <button
+          id="startButton"
+          type="button"
+          class="primary-button large-button"
+        >
+          Begin Planning Tool
+        </button>
+
+        <p class="time-note">
+          Approximately 5 minutes to complete
+        </p>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         QUESTIONNAIRE
+         ================================================= -->
+
+    <section id="questionnaire" class="questionnaire-card hidden">
+
+
+      <div class="questionnaire-header">
+
+        <p class="eyebrow">
+          Response planning
+        </p>
+
+        <h2>
+          Consider the current situation
+        </h2>
+
+        <p>
+          Select the response that best reflects what is currently known.
+          The questions are intended to support professional judgement and
+          identify potentially relevant response actions.
+        </p>
+
+
+        <div class="progress-track">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+      </div>
+
+
+
+      <!-- ===============================================
+           SECTION 1
+           =============================================== -->
+
+      <section
+        class="form-section"
+        data-section="1"
+      >
+
+        <div class="section-number">
+          Section 1 of 7
+        </div>
+
+        <h3>
+          Pattern, power and context
+        </h3>
+
+
+        <div class="question-block">
+
+          <label for="pattern">
+            What best describes the pattern of behaviour?
+          </label>
+
+          <select id="pattern">
+            <option value="">Select an option</option>
+
+            <option value="isolated">
+              Isolated or limited concern
+            </option>
+
+            <option value="emerging">
+              Emerging pattern or likely to be repeated
+            </option>
+
+            <option value="repeated">
+              Clear repeated pattern
+            </option>
+
+            <option value="persistent">
+              Persistent despite previous responses
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="question-block">
+
+          <label for="power">
+            Is there evidence of an imbalance or misuse of power?
+          </label>
+
+          <select id="power">
+            <option value="">Select an option</option>
+
+            <option value="unclear">
+              Unclear or still being established
+            </option>
+
+            <option value="some">
+              Some indicators of power imbalance
+            </option>
+
+            <option value="clear">
+              Clear misuse or imbalance of power
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="question-block">
+
+          <label for="context">
+            Where is the behaviour primarily occurring?
+          </label>
+
+          <select id="context">
+            <option value="">Select an option</option>
+
+            <option value="school">
+              Primarily in one school setting or context
+            </option>
+
+            <option value="multiple">
+              Across multiple school settings or times
+            </option>
+
+            <option value="online">
+              Primarily online or through digital platforms
+            </option>
+
+            <option value="mixed">
+              Across school and online / community contexts
+            </option>
+          </select>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           SECTION 2
+           =============================================== -->
+
+      <section
+        class="form-section"
+        data-section="2"
+      >
+
+        <div class="section-number">
+          Section 2 of 7
+        </div>
+
+        <h3>
+          Safety and impact
+        </h3>
+
+
+        <div class="question-block">
+
+          <label for="safety">
+            Are there current safety or protective concerns?
+          </label>
+
+          <select id="safety">
+            <option value="">Select an option</option>
+
+            <option value="none">
+              No significant current safety concern identified
+            </option>
+
+            <option value="some">
+              Some concern requiring additional protection or monitoring
+            </option>
+
+            <option value="significant">
+              Significant or immediate safety concern
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="question-block">
+
+          <label for="impact">
+            What is the current impact on the student experiencing the behaviour?
+          </label>
+
+          <select id="impact">
+            <option value="">Select an option</option>
+
+            <option value="limited">
+              Limited or emerging impact
+            </option>
+
+            <option value="moderate">
+              Noticeable impact on wellbeing, engagement or participation
+            </option>
+
+            <option value="significant">
+              Significant impact on safety, wellbeing, attendance or engagement
+            </option>
+          </select>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           SECTION 3
+           =============================================== -->
+
+      <section
+        class="form-section"
+        data-section="3"
+      >
+
+        <div class="section-number">
+          Section 3 of 7
+        </div>
+
+        <h3>
+          Behaviour understanding and skill needs
+        </h3>
+
+
+        <div class="question-block">
+
+          <label for="behaviourUnderstanding">
+            How well are the factors contributing to the behaviour understood?
+          </label>
+
+          <select id="behaviourUnderstanding">
+            <option value="">Select an option</option>
+
+            <option value="clear">
+              Contributing factors are reasonably clear
+            </option>
+
+            <option value="partial">
+              Some understanding, but further assessment would help
+            </option>
+
+            <option value="unclear">
+              Behaviour remains complex or poorly understood
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="question-block">
+
+          <label for="skills">
+            Are there identified skill or replacement-behaviour needs?
+          </label>
+
+          <select id="skills">
+            <option value="">Select an option</option>
+
+            <option value="limited">
+              Limited additional teaching need identified
+            </option>
+
+            <option value="some">
+              Some targeted teaching or coaching is required
+            </option>
+
+            <option value="significant">
+              Significant or individualised skill development is required
+            </option>
+          </select>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           SECTION 4
+           =============================================== -->
+
+      <section
+        class="form-section"
+        data-section="4"
+      >
+
+        <div class="section-number">
+          Section 4 of 7
+        </div>
+
+        <h3>
+          Environment and adjustments
+        </h3>
+
+
+        <div class="question-block">
+
+          <label for="environment">
+            Are environmental factors contributing to opportunities for the behaviour?
+          </label>
+
+          <select id="environment">
+            <option value="">Select an option</option>
+
+            <option value="limited">
+              Few specific environmental concerns identified
+            </option>
+
+            <option value="some">
+              Some locations, routines or transitions require adjustment
+            </option>
+
+            <option value="multiple">
+              Multiple settings or environmental factors are contributing
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="question-block">
+
+          <label for="adjustments">
+            Do individual needs or adjustments require consideration?
+          </label>
+
+          <select id="adjustments">
+            <option value="">Select an option</option>
+
+            <option value="adequate">
+              Current adjustments appear adequate
+            </option>
+
+            <option value="review">
+              Adjustments should be reviewed or strengthened
+            </option>
+
+            <option value="significant">
+              Significant or specialist adjustment needs are present
+            </option>
+          </select>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           SECTION 5
+           =============================================== -->
+
+      <section
+        class="form-section"
+        data-section="5"
+      >
+
+        <div class="section-number">
+          Section 5 of 7
+        </div>
+
+        <h3>
+          Peers, connection and belonging
+        </h3>
+
+
+        <div class="question-block">
+
+          <label for="peers">
+            To what extent are peer or group dynamics contributing?
+          </label>
+
+          <select id="peers">
+            <option value="">Select an option</option>
+
+            <option value="limited">
+              Limited peer-group influence identified
+            </option>
+
+            <option value="some">
+              Peer attention, reinforcement or group dynamics are contributing
+            </option>
+
+            <option value="significant">
+              Significant or entrenched peer-group dynamics are present
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="question-block">
+
+          <label for="belonging">
+            Are there concerns about connection, belonging or protective relationships?
+          </label>
+
+          <select id="belonging">
+            <option value="">Select an option</option>
+
+            <option value="strong">
+              Connection and protective relationships appear strong
+            </option>
+
+            <option value="some">
+              Some additional connection or belonging support is needed
+            </option>
+
+            <option value="significant">
+              Significant disconnection, isolation or disengagement is evident
+            </option>
+          </select>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           SECTION 6
+           =============================================== -->
+
+      <section
+        class="form-section"
+        data-section="6"
+      >
+
+        <div class="section-number">
+          Section 6 of 7
+        </div>
+
+        <h3>
+          Family and coordinated support
+        </h3>
+
+
+        <div class="question-block">
+
+          <label for="family">
+            What level of family partnership or communication is required?
+          </label>
+
+          <select id="family">
+            <option value="">Select an option</option>
+
+            <option value="established">
+              Communication and partnership are established
+            </option>
+
+            <option value="partial">
+              Additional planned communication or shared planning is needed
+            </option>
+
+            <option value="complex">
+              Complex or intensive family engagement is required
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="question-block">
+
+          <label for="supports">
+            How much coordination is required across staff or support services?
+          </label>
+
+          <select id="supports">
+            <option value="">Select an option</option>
+
+            <option value="routine">
+              Routine school-based coordination is sufficient
+            </option>
+
+            <option value="some">
+              Additional coordination across relevant staff is required
+            </option>
+
+            <option value="significant">
+              Significant multidisciplinary or specialist coordination is required
+            </option>
+          </select>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           SECTION 7
+           =============================================== -->
+
+      <section
+        class="form-section"
+        data-section="7"
+      >
+
+        <div class="section-number">
+          Section 7 of 7
+        </div>
+
+        <h3>
+          Previous response and monitoring
+        </h3>
+
+
+        <div class="question-block">
+
+          <label for="previousResponse">
+            How effective have previous responses been?
+          </label>
+
+          <select id="previousResponse">
+            <option value="">Select an option</option>
+
+            <option value="effective">
+              No significant previous response concerns
+            </option>
+
+            <option value="partial">
+              Responses have been partly effective or inconsistently implemented
+            </option>
+
+            <option value="notWorking">
+              Concerns continue despite previous intervention
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="question-block">
+
+          <label for="monitoring">
+            Are clear monitoring and review arrangements currently in place?
+          </label>
+
+          <select id="monitoring">
+            <option value="">Select an option</option>
+
+            <option value="yes">
+              Yes — monitoring and review arrangements are clear
+            </option>
+
+            <option value="partial">
+              Partly — arrangements need strengthening
+            </option>
+
+            <option value="no">
+              No — clear monitoring arrangements are not yet established
+            </option>
+          </select>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           QUESTIONNAIRE NAVIGATION
+           =============================================== -->
+
+      <div class="questionnaire-navigation">
+
+        <button
+          id="backButton"
+          type="button"
+          class="secondary-control"
+        >
+          Back
+        </button>
+
+        <button
+          id="nextButton"
+          type="button"
+          class="primary-button"
+        >
+          Next
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         GENERATED ACTION PLAN
+         ================================================= -->
+
+    <section id="actionPlan" class="action-plan-card hidden">
+
+
+      <div class="action-plan-header">
+
+        <p class="eyebrow">
+          Generated response plan
+        </p>
+
+        <h2>
+          Bullying Response Action Plan
+        </h2>
+
+        <p>
+          The actions below have been identified as potentially relevant
+          based on the information entered. They are intended to support,
+          not replace, professional judgement.
+        </p>
+
+      </div>
+
+
+
+      <!-- ===============================================
+           INSTRUCTIONS
+           =============================================== -->
+
+      <div class="plan-instructions">
+
+        <strong>
+          How to use this action plan
+        </strong>
+
+        <p>
+          Review the recommended actions below and tick the items your school
+          intends to implement. Add the responsible person and due date for
+          each selected action. When you select
+          <strong>Print / Save as PDF</strong>, only the actions you have
+          selected will be included in the final action plan.
+        </p>
+
+      </div>
+
+
+
+      <!-- ===============================================
+           CASE DETAILS
+           =============================================== -->
+
+      <div class="case-details no-print-empty">
+
+        <h3>
+          Plan details
+        </h3>
+
+        <div class="case-details-grid">
+
+          <div>
+            <label for="schoolName">
+              School
+            </label>
+
+            <input
+              id="schoolName"
+              type="text"
+              class="detail-input"
+              placeholder="School name"
+            >
+          </div>
+
+
+          <div>
+            <label for="studentReference">
+              Student / case reference
+            </label>
+
+            <input
+              id="studentReference"
+              type="text"
+              class="detail-input"
+              placeholder="Optional"
+            >
+          </div>
+
+
+          <div>
+            <label for="planDate">
+              Plan date
+            </label>
+
+            <input
+              id="planDate"
+              type="date"
+              class="detail-input"
+            >
+          </div>
+
+
+          <div>
+            <label for="planLead">
+              Plan lead
+            </label>
+
+            <input
+              id="planLead"
+              type="text"
+              class="detail-input"
+              placeholder="Name / role"
+            >
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- ===============================================
+           IMMEDIATE SAFETY
+           =============================================== -->
+
+      <section
+        id="safetySection"
+        class="plan-section safety-plan-section hidden"
+      >
+
+        <div class="tier-heading">
+
+          <div>
+            <span class="tier-label safety-label">
+              Priority
+            </span>
+
+            <h3>
+              Immediate safety and protective actions
+            </h3>
+          </div>
+
+        </div>
+
+
+        <p class="tier-description">
+          Select any immediate protective actions required to restore safety
+          and reduce the risk of further harm.
+        </p>
+
+
+        <div class="table-wrap">
+
+          <table class="action-table">
+
+            <thead>
+              <tr>
+                <th class="select-column">
+                  Select
+                </th>
+
+                <th>
+                  Action
+                </th>
+
+                <th class="responsible-column">
+                  Responsible
+                </th>
+
+                <th class="date-column">
+                  Due date
+                </th>
+              </tr>
+            </thead>
+
+            <tbody id="safetyActions"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           TIER 1
+           =============================================== -->
+
+      <section
+        id="tier1Section"
+        class="plan-section"
+      >
+
+        <div class="tier-heading">
+
+          <div>
+            <span class="tier-label">
+              Tier 1
+            </span>
+
+            <h3>
+              Recommended foundation actions
+            </h3>
+          </div>
+
+        </div>
+
+
+        <p class="tier-description">
+          Select the actions that will form part of the school’s foundation
+          response.
+        </p>
+
+
+        <div class="table-wrap">
+
+          <table class="action-table">
+
+            <thead>
+              <tr>
+                <th class="select-column">
+                  Select
+                </th>
+
+                <th>
+                  Action
+                </th>
+
+                <th class="responsible-column">
+                  Responsible
+                </th>
+
+                <th class="date-column">
+                  Due date
+                </th>
+              </tr>
+            </thead>
+
+            <tbody id="tier1Actions"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           TIER 2
+           =============================================== -->
+
+      <section
+        id="tier2Section"
+        class="plan-section hidden"
+      >
+
+        <div class="tier-heading">
+
+          <div>
+            <span class="tier-label tier2-label">
+              Tier 2
+            </span>
+
+            <h3>
+              Recommended targeted actions
+            </h3>
+          </div>
+
+        </div>
+
+
+        <p class="tier-description">
+          Select the targeted actions that are appropriate to the identified
+          needs.
+        </p>
+
+
+        <div class="table-wrap">
+
+          <table class="action-table">
+
+            <thead>
+              <tr>
+                <th class="select-column">
+                  Select
+                </th>
+
+                <th>
+                  Action
+                </th>
+
+                <th class="responsible-column">
+                  Responsible
+                </th>
+
+                <th class="date-column">
+                  Due date
+                </th>
+              </tr>
+            </thead>
+
+            <tbody id="tier2Actions"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           TIER 3
+           =============================================== -->
+
+      <section
+        id="tier3Section"
+        class="plan-section hidden"
+      >
+
+        <div class="tier-heading">
+
+          <div>
+            <span class="tier-label tier3-label">
+              Tier 3
+            </span>
+
+            <h3>
+              Recommended intensive actions
+            </h3>
+          </div>
+
+        </div>
+
+
+        <p class="tier-description">
+          Select any intensive, individualised or coordinated actions required
+          for the response.
+        </p>
+
+
+        <div class="table-wrap">
+
+          <table class="action-table">
+
+            <thead>
+              <tr>
+                <th class="select-column">
+                  Select
+                </th>
+
+                <th>
+                  Action
+                </th>
+
+                <th class="responsible-column">
+                  Responsible
+                </th>
+
+                <th class="date-column">
+                  Due date
+                </th>
+              </tr>
+            </thead>
+
+            <tbody id="tier3Actions"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           REVIEW
+           =============================================== -->
+
+      <section
+        id="reviewSection"
+        class="plan-section review-section"
+      >
+
+        <div class="tier-heading">
+
+          <div>
+            <span class="tier-label review-label">
+              Review
+            </span>
+
+            <h3>
+              Monitoring and review
+            </h3>
+          </div>
+
+        </div>
+
+
+        <p class="tier-description">
+          Select the review actions that will be used to monitor implementation
+          and determine whether the response is having the intended impact.
+        </p>
+
+
+        <div class="table-wrap">
+
+          <table class="action-table">
+
+            <thead>
+              <tr>
+                <th class="select-column">
+                  Select
+                </th>
+
+                <th>
+                  Action
+                </th>
+
+                <th class="responsible-column">
+                  Responsible
+                </th>
+
+                <th class="date-column">
+                  Due date
+                </th>
+              </tr>
+            </thead>
+
+            <tbody id="reviewActions"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           PLAN CONTROLS
+           =============================================== -->
+
+      <div class="plan-controls">
+
+        <p id="selectedCount" class="selected-count">
+          0 actions selected
+        </p>
+
+
+        <div class="plan-button-row">
+
+          <button
+            id="editResponsesButton"
+            type="button"
+            class="secondary-control"
+          >
+            Back to Responses
+          </button>
+
+
+          <button
+            id="restartButton"
+            type="button"
+            class="secondary-control"
+          >
+            Start Again
+          </button>
+
+
+          <button
+            id="printButton"
+            type="button"
+            class="primary-button"
+          >
+            Print / Save as PDF
+          </button>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- ===============================================
+           PRINT FOOTER
+           =============================================== -->
+
+      <div class="print-footer">
+        Bullying Response Planning Tool | Independently developed
+        decision-support resource | Developed by David Capill
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+
+
+  <!-- =================================================
+       SITE FOOTER
+       ================================================= -->
+
+  <footer class="site-footer">
+
+    <p>
+      Bullying Response Planning Tool | Developed by David Capill
+    </p>
+
+    <p>
+      Independently developed decision-support resource. Not an official
+      Department of Education tool. Does not replace policy, procedures or
+      professional judgement.
+    </p>
+
+    <p>
+      Questions or feedback:
+      <a href="mailto:bullyingresponseplanning@gmail.com">
+        bullyingresponseplanning@gmail.com
+      </a>
+    </p>
+
+  </footer>
+
+
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>
