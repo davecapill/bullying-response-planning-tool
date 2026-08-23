@@ -1,11 +1,7 @@
 // =====================================================
 // BULLYING RESPONSE PLANNING TOOL
+// Version 1.1
 // Complete script.js
-// =====================================================
-
-
-// =====================================================
-// ELEMENTS / STATE
 // =====================================================
 
 const landingPage = document.getElementById("landingPage");
@@ -22,7 +18,14 @@ const printButton = document.getElementById("printButton");
 const restartButton = document.getElementById("restartButton");
 const editResponsesButton = document.getElementById("editResponsesButton");
 const selectedCount = document.getElementById("selectedCount");
+
 const planDate = document.getElementById("planDate");
+const addCustomActionButton =
+  document.getElementById("addCustomActionButton");
+const customActions =
+  document.getElementById("customActions");
+const monitoringActionsWrap =
+  document.getElementById("monitoringActionsWrap");
 
 let currentSection = 1;
 const totalSections = sections.length;
@@ -38,8 +41,10 @@ function setDefaultPlanDate() {
   }
 
   const today = new Date();
+
   const localDate = new Date(
-    today.getTime() - today.getTimezoneOffset() * 60000
+    today.getTime() -
+    today.getTimezoneOffset() * 60000
   )
     .toISOString()
     .split("T")[0];
@@ -47,7 +52,106 @@ function setDefaultPlanDate() {
   planDate.value = localDate;
 }
 
+
+function getCheckedValues(name) {
+  return Array.from(
+    document.querySelectorAll(
+      `input[name="${name}"]:checked`
+    )
+  ).map(function (input) {
+    return input.value;
+  });
+}
+
+
+// =====================================================
+// EXCLUSIVE CHECKBOX OPTIONS
+//
+// "No significant..." options cannot be selected
+// at the same time as other options in that group.
+// =====================================================
+
+function setupExclusiveCheckboxGroups() {
+
+  document
+    .querySelectorAll(
+      'input[type="checkbox"][data-exclusive]'
+    )
+    .forEach(function (exclusive) {
+
+      exclusive.addEventListener(
+        "change",
+        function () {
+
+          const group =
+            this.dataset.exclusive;
+
+          const groupInputs =
+            document.querySelectorAll(
+              `input[name="${group}"]`
+            );
+
+          if (this.checked) {
+
+            groupInputs.forEach(
+              function (input) {
+
+                if (input !== exclusive) {
+                  input.checked = false;
+                }
+
+              }
+            );
+
+          }
+
+        }
+      );
+
+    });
+
+
+  [
+    "impacts",
+    "skills",
+    "peerDynamics"
+  ].forEach(function (group) {
+
+    document
+      .querySelectorAll(
+        `input[name="${group}"]:not([data-exclusive])`
+      )
+      .forEach(function (input) {
+
+        input.addEventListener(
+          "change",
+          function () {
+
+            if (!this.checked) {
+              return;
+            }
+
+            const exclusive =
+              document.querySelector(
+                `input[name="${group}"][data-exclusive]`
+              );
+
+            if (exclusive) {
+              exclusive.checked = false;
+            }
+
+          }
+        );
+
+      });
+
+  });
+
+}
+
+
 setDefaultPlanDate();
+setupExclusiveCheckboxGroups();
 
 
 // =====================================================
@@ -55,20 +159,31 @@ setDefaultPlanDate();
 // =====================================================
 
 if (startButton) {
-  startButton.addEventListener("click", function () {
-    if (landingPage) {
-      landingPage.classList.add("hidden");
+
+  startButton.addEventListener(
+    "click",
+    function () {
+
+      if (landingPage) {
+        landingPage.classList.add("hidden");
+      }
+
+      if (questionnaire) {
+        questionnaire.classList.remove("hidden");
+      }
+
+      currentSection = 1;
+
+      showSection(currentSection);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
     }
+  );
 
-    questionnaire.classList.remove("hidden");
-    currentSection = 1;
-    showSection(currentSection);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  });
 }
 
 
@@ -77,65 +192,113 @@ if (startButton) {
 // =====================================================
 
 if (nextButton) {
-  nextButton.addEventListener("click", function () {
-    if (!validateCurrentSection()) {
-      return;
-    }
 
-    if (currentSection < totalSections) {
-      currentSection++;
-      showSection(currentSection);
-    } else {
-      generateActionPlan();
+  nextButton.addEventListener(
+    "click",
+    function () {
+
+      if (!validateCurrentSection()) {
+        return;
+      }
+
+      if (currentSection < totalSections) {
+
+        currentSection++;
+
+        showSection(currentSection);
+
+      } else {
+
+        generateActionPlan();
+
+      }
+
     }
-  });
+  );
+
 }
 
 
 if (backButton) {
-  backButton.addEventListener("click", function () {
-    if (currentSection > 1) {
-      currentSection--;
-      showSection(currentSection);
+
+  backButton.addEventListener(
+    "click",
+    function () {
+
+      if (currentSection > 1) {
+
+        currentSection--;
+
+        showSection(currentSection);
+
+      }
+
     }
-  });
+  );
+
 }
 
 
 function showSection(sectionNumber) {
-  sections.forEach(function (section) {
-    section.classList.remove("active-section");
-  });
 
-  const selectedSection = document.querySelector(
-    `.form-section[data-section="${sectionNumber}"]`
+  sections.forEach(
+    function (section) {
+      section.classList.remove(
+        "active-section"
+      );
+    }
   );
 
+
+  const selectedSection =
+    document.querySelector(
+      `.form-section[data-section="${sectionNumber}"]`
+    );
+
+
   if (selectedSection) {
-    selectedSection.classList.add("active-section");
+    selectedSection.classList.add(
+      "active-section"
+    );
   }
 
-  if (progressBar && totalSections > 0) {
+
+  if (
+    progressBar &&
+    totalSections > 0
+  ) {
+
     progressBar.style.width =
       `${(sectionNumber / totalSections) * 100}%`;
+
   }
+
 
   if (backButton) {
+
     backButton.style.visibility =
-      sectionNumber === 1 ? "hidden" : "visible";
+      sectionNumber === 1
+        ? "hidden"
+        : "visible";
+
   }
 
+
   if (nextButton) {
+
     nextButton.textContent =
       sectionNumber === totalSections
         ? "Generate Action Plan"
         : "Next";
+
   }
+
 
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
+
 }
 
 
@@ -144,29 +307,85 @@ function showSection(sectionNumber) {
 // =====================================================
 
 function validateCurrentSection() {
+
   const current =
     document.querySelector(
       `.form-section[data-section="${currentSection}"]`
     );
 
+
   if (!current) {
     return true;
   }
 
-  const selects = current.querySelectorAll("select");
+
+  const selects =
+    current.querySelectorAll("select");
+
 
   for (const select of selects) {
+
     if (!select.value) {
+
       alert(
         "Please complete all questions in this section before continuing."
       );
 
       select.focus();
+
       return false;
+
     }
+
   }
 
+
+  const requiredCheckboxGroups = {
+
+    1: ["contexts"],
+
+    2: ["impacts"],
+
+    3: ["skills"],
+
+    5: ["peerDynamics"]
+
+  };
+
+
+  const groups =
+    requiredCheckboxGroups[currentSection] ||
+    [];
+
+
+  for (const group of groups) {
+
+    if (
+      getCheckedValues(group).length === 0
+    ) {
+
+      alert(
+        "Please select at least one response for each multi-select question before continuing."
+      );
+
+      const first =
+        current.querySelector(
+          `input[name="${group}"]`
+        );
+
+      if (first) {
+        first.focus();
+      }
+
+      return false;
+
+    }
+
+  }
+
+
   return true;
+
 }
 
 
@@ -175,907 +394,1809 @@ function validateCurrentSection() {
 // =====================================================
 
 function getAnswers() {
-  return {
-    pattern: document.getElementById("pattern").value,
-    power: document.getElementById("power").value,
-    context: document.getElementById("context").value,
 
-    safety: document.getElementById("safety").value,
-    impact: document.getElementById("impact").value,
+  return {
+
+    pattern:
+      document.getElementById(
+        "pattern"
+      ).value,
+
+    power:
+      document.getElementById(
+        "power"
+      ).value,
+
+    contexts:
+      getCheckedValues(
+        "contexts"
+      ),
+
+    safety:
+      document.getElementById(
+        "safety"
+      ).value,
+
+    impacts:
+      getCheckedValues(
+        "impacts"
+      ),
 
     behaviourUnderstanding:
-      document.getElementById("behaviourUnderstanding").value,
+      document.getElementById(
+        "behaviourUnderstanding"
+      ).value,
 
     skills:
-      document.getElementById("skills").value,
+      getCheckedValues(
+        "skills"
+      ),
 
     environment:
-      document.getElementById("environment").value,
+      document.getElementById(
+        "environment"
+      ).value,
 
     adjustments:
-      document.getElementById("adjustments").value,
+      document.getElementById(
+        "adjustments"
+      ).value,
 
-    peers:
-      document.getElementById("peers").value,
+    peerDynamics:
+      getCheckedValues(
+        "peerDynamics"
+      ),
 
-    belonging:
-      document.getElementById("belonging").value,
+    trustedAdult:
+      document.getElementById(
+        "trustedAdult"
+      ).value,
 
     family:
-      document.getElementById("family").value,
+      document.getElementById(
+        "family"
+      ).value,
 
-    supports:
-      document.getElementById("supports").value,
+    coordination:
+      document.getElementById(
+        "coordination"
+      ).value,
 
     previousResponse:
-      document.getElementById("previousResponse").value,
+      document.getElementById(
+        "previousResponse"
+      ).value,
 
     monitoring:
-      document.getElementById("monitoring").value
+      document.getElementById(
+        "monitoring"
+      ).value
+
   };
+
 }
 
 
 // =====================================================
-// BUILD DECISION PROFILE
-// =====================================================
-
-function buildDecisionProfile(answers) {
-  const profile = {
-    SAFETY: 0,
-    PERSISTENCE: 0,
-    IMPACT: 0,
-    BEHAVIOUR_NEED: 0,
-    ENVIRONMENT: 0,
-    PEER: 0,
-    WELLBEING_CONNECTION: 0,
-    RESPONSE_HISTORY: 0,
-    FAMILY: 0,
-    ADJUSTMENTS: 0,
-    COORDINATION: 0,
-    POWER: 0
-  };
-
-
-  // Pattern / persistence
-  if (answers.pattern === "emerging") {
-    profile.PERSISTENCE = 1;
-  }
-
-  if (answers.pattern === "repeated") {
-    profile.PERSISTENCE = 2;
-  }
-
-  if (answers.pattern === "persistent") {
-    profile.PERSISTENCE = 2;
-    profile.RESPONSE_HISTORY = 2;
-  }
-
-
-  // Power imbalance
-  if (answers.power === "some") {
-    profile.POWER = 1;
-  }
-
-  if (answers.power === "clear") {
-    profile.POWER = 2;
-  }
-
-
-  // Safety
-  if (answers.safety === "some") {
-    profile.SAFETY = 1;
-  }
-
-  if (answers.safety === "significant") {
-    profile.SAFETY = 2;
-  }
-
-
-  // Impact
-  if (answers.impact === "moderate") {
-    profile.IMPACT = 1;
-    profile.WELLBEING_CONNECTION = 1;
-  }
-
-  if (answers.impact === "significant") {
-    profile.IMPACT = 2;
-    profile.WELLBEING_CONNECTION = 2;
-  }
-
-
-  // Behaviour understanding
-  if (answers.behaviourUnderstanding === "partial") {
-    profile.BEHAVIOUR_NEED = Math.max(
-      profile.BEHAVIOUR_NEED,
-      1
-    );
-  }
-
-  if (answers.behaviourUnderstanding === "unclear") {
-    profile.BEHAVIOUR_NEED = Math.max(
-      profile.BEHAVIOUR_NEED,
-      2
-    );
-  }
-
-
-  // Skill need
-  if (answers.skills === "some") {
-    profile.BEHAVIOUR_NEED = Math.max(
-      profile.BEHAVIOUR_NEED,
-      1
-    );
-  }
-
-  if (answers.skills === "significant") {
-    profile.BEHAVIOUR_NEED = Math.max(
-      profile.BEHAVIOUR_NEED,
-      2
-    );
-  }
-
-
-  // Environment
-  if (answers.environment === "some") {
-    profile.ENVIRONMENT = 1;
-  }
-
-  if (answers.environment === "multiple") {
-    profile.ENVIRONMENT = 2;
-  }
-
-
-  // Adjustments
-  if (answers.adjustments === "review") {
-    profile.ADJUSTMENTS = 1;
-  }
-
-  if (answers.adjustments === "significant") {
-    profile.ADJUSTMENTS = 2;
-  }
-
-
-  // Peers
-  if (answers.peers === "some") {
-    profile.PEER = 1;
-  }
-
-  if (answers.peers === "significant") {
-    profile.PEER = 2;
-  }
-
-
-  // Belonging
-  if (answers.belonging === "some") {
-    profile.WELLBEING_CONNECTION = Math.max(
-      profile.WELLBEING_CONNECTION,
-      1
-    );
-  }
-
-  if (answers.belonging === "significant") {
-    profile.WELLBEING_CONNECTION = 2;
-  }
-
-
-  // Family
-  if (answers.family === "partial") {
-    profile.FAMILY = 1;
-  }
-
-  if (answers.family === "complex") {
-    profile.FAMILY = 2;
-  }
-
-
-  // Coordination
-  if (answers.supports === "some") {
-    profile.COORDINATION = 1;
-  }
-
-  if (answers.supports === "significant") {
-    profile.COORDINATION = 2;
-  }
-
-
-  // Previous response
-  if (answers.previousResponse === "partial") {
-    profile.RESPONSE_HISTORY = Math.max(
-      profile.RESPONSE_HISTORY,
-      1
-    );
-  }
-
-  if (answers.previousResponse === "notWorking") {
-    profile.RESPONSE_HISTORY = 2;
-  }
-
-
-  return profile;
-}
-
-
-// =====================================================
-// DETERMINE RESPONSE TIERS
+// CANONICAL ACTION BANK
 //
-// Tier 1 always remains active.
-// Tier 2 and Tier 3 add to Tier 1 rather than replacing it.
+// One ID = one action.
+// This allows overlapping triggers to be merged,
+// strengthened or removed before display.
 // =====================================================
 
-function determineTiers(profile) {
-  let tier2 = false;
-  let tier3 = false;
-
-  const domainScores = [
-    profile.SAFETY,
-    profile.PERSISTENCE,
-    profile.IMPACT,
-    profile.BEHAVIOUR_NEED,
-    profile.ENVIRONMENT,
-    profile.PEER,
-    profile.WELLBEING_CONNECTION,
-    profile.RESPONSE_HISTORY,
-    profile.FAMILY,
-    profile.ADJUSTMENTS,
-    profile.COORDINATION,
-    profile.POWER
-  ];
-
-  const moderateDomains =
-    domainScores.filter(function (score) {
-      return score >= 1;
-    }).length;
-
-  const highDomains =
-    domainScores.filter(function (score) {
-      return score === 2;
-    }).length;
+const ACTIONS = {
 
 
-  // Targeted support
-  if (
-    moderateDomains >= 2 ||
-    profile.PERSISTENCE > 0 ||
-    profile.IMPACT > 0 ||
-    profile.BEHAVIOUR_NEED > 0 ||
-    profile.RESPONSE_HISTORY > 0 ||
-    profile.POWER === 2
-  ) {
-    tier2 = true;
+  // ---------------------------------------------------
+  // PATTERN / UNDERSTANDING
+  // ---------------------------------------------------
+
+  clarifySituation: {
+
+    id: "clarifySituation",
+
+    tier: 1,
+
+    text:
+      "Gather further information from relevant students, staff and available records to clarify the nature, pattern and context of the behaviour."
+
+  },
+
+
+  shortMonitoring: {
+
+    id: "shortMonitoring",
+
+    tier: 1,
+
+    text:
+      "Establish short-term monitoring to determine whether a repeated pattern of bullying behaviour is developing."
+
+  },
+
+
+  patternAnalysis: {
+
+    id: "patternAnalysis",
+
+    tier: 2,
+
+    text:
+      "Analyse and monitor patterns in the behaviour, including frequency, timing, location, students involved and contributing factors."
+
+  },
+
+
+  coordinatedMonitoring: {
+
+    id: "coordinatedMonitoring",
+
+    tier: 2,
+
+    text:
+      "Establish coordinated monitoring across relevant settings to track whether the frequency, severity and impact of the behaviour reduces over time."
+
+  },
+
+
+  // ---------------------------------------------------
+  // DIGITAL CONTEXT
+  // ---------------------------------------------------
+
+  digitalResponse: {
+
+    id: "digitalResponse",
+
+    tier: 1,
+
+    text:
+      "Address the identified online behaviour through clear expectations, appropriate digital-safety education and communication with relevant students and families."
+
+  },
+
+
+  // ---------------------------------------------------
+  // SAFETY
+  // ---------------------------------------------------
+
+  practicalSafety: {
+
+    id: "practicalSafety",
+
+    tier: 2,
+
+    text:
+      "Identify and implement practical arrangements to reduce the student's exposure to further bullying behaviour, retaliation or continued harm."
+
+  },
+
+
+  trustedAdult: {
+
+    id: "trustedAdult",
+
+    tier: 2,
+
+    text:
+      "Identify a trusted staff member the student can readily approach for support and establish regular check-ins while concerns remain."
+
+  },
+
+
+  safetyPlan: {
+
+    id: "safetyPlan",
+
+    tier: 3,
+
+    text:
+      "Develop and document an individual safety plan identifying current risks, protective actions, safe locations, trusted adults and arrangements for seeking immediate support."
+
+  },
+
+
+  intensiveProtection: {
+
+    id: "intensiveProtection",
+
+    tier: 3,
+
+    text:
+      "Implement increased supervision or other protective arrangements during identified high-risk times and locations, with senior leadership oversight until immediate risk has reduced."
+
+  },
+
+
+  // ---------------------------------------------------
+  // IMPACT
+  // ---------------------------------------------------
+
+  emotionalSupport: {
+
+    id: "emotionalSupport",
+
+    tier: 2,
+
+    text:
+      "Schedule regular wellbeing check-ins and monitor changes in the student's emotional wellbeing and sense of safety."
+
+  },
+
+
+  engagementSupport: {
+
+    id: "engagementSupport",
+
+    tier: 2,
+
+    text:
+      "Develop strategies to support the student's safe participation and re-engagement in affected learning or school activities."
+
+  },
+
+
+  avoidanceSupport: {
+
+    id: "avoidanceSupport",
+
+    tier: 2,
+
+    text:
+      "Identify the students, locations or situations being avoided and implement arrangements that support safe access and participation."
+
+  },
+
+
+  attendanceSupport: {
+
+    id: "attendanceSupport",
+
+    tier: 2,
+
+    text:
+      "Develop an attendance and re-engagement response that addresses safety concerns contributing to school avoidance or reduced attendance."
+
+  },
+
+
+  peerConnection: {
+
+    id: "peerConnection",
+
+    tier: 2,
+
+    text:
+      "Create safe opportunities to strengthen positive peer connection, belonging and participation for the student experiencing bullying."
+
+  },
+
+
+  wellbeingReferral: {
+
+    id: "wellbeingReferral",
+
+    tier: 3,
+
+    text:
+      "Coordinate appropriate school-based wellbeing or specialist support where significant or escalating wellbeing concerns are identified."
+
+  },
+
+
+  // ---------------------------------------------------
+  // BEHAVIOUR ASSESSMENT
+  // ---------------------------------------------------
+
+  behaviourInfo: {
+
+    id: "behaviourInfo",
+
+    tier: 2,
+
+    text:
+      "Gather and analyse information about when, where and with whom the behaviour occurs, including likely triggers and factors reinforcing or maintaining it."
+
+  },
+
+
+  structuredBehaviourAssessment: {
+
+    id: "structuredBehaviourAssessment",
+
+    tier: 2,
+
+    text:
+      "Undertake a structured assessment of the behaviour using incident information, observations and relevant student and staff input to identify triggers, patterns and maintaining factors."
+
+  },
+
+
+  intensiveBehaviourAssessment: {
+
+    id: "intensiveBehaviourAssessment",
+
+    tier: 3,
+
+    text:
+      "Undertake a comprehensive assessment of the behaviour and consider specialist behaviour consultation or Functional Behaviour Assessment to inform an individualised response."
+
+  },
+
+
+  // ---------------------------------------------------
+  // SKILL DEVELOPMENT
+  // ---------------------------------------------------
+
+  respectfulSkills: {
+
+    id: "respectfulSkills",
+
+    tier: 1,
+
+    text:
+      "Explicitly teach, model and practise respectful communication and interaction in the situations where difficulties are occurring."
+
+  },
+
+
+  conflictSkills: {
+
+    id: "conflictSkills",
+
+    tier: 1,
+
+    text:
+      "Teach and rehearse appropriate strategies for managing disagreement and conflict without intimidation, aggression or exclusion."
+
+  },
+
+
+  regulationSkills: {
+
+    id: "regulationSkills",
+
+    tier: 2,
+
+    text:
+      "Teach and practise emotional regulation and impulse-control strategies and plan how these will be used in identified high-risk situations."
+
+  },
+
+
+  perspectiveSkills: {
+
+    id: "perspectiveSkills",
+
+    tier: 1,
+
+    text:
+      "Use structured teaching and reflection to strengthen understanding of the impact of behaviour on others and identify appropriate alternative responses."
+
+  },
+
+
+  connectionSkills: {
+
+    id: "connectionSkills",
+
+    tier: 2,
+
+    text:
+      "Teach and reinforce appropriate ways of gaining peer attention, status or connection without harming, intimidating or excluding others."
+
+  },
+
+
+  problemSolvingSkills: {
+
+    id: "problemSolvingSkills",
+
+    tier: 1,
+
+    text:
+      "Explicitly teach and rehearse problem-solving strategies for challenging social situations."
+
+  },
+
+
+  digitalSkills: {
+
+    id: "digitalSkills",
+
+    tier: 2,
+
+    text:
+      "Provide targeted teaching and coaching in appropriate digital communication and online conduct."
+
+  },
+
+
+  otherSkill: {
+
+    id: "otherSkill",
+
+    tier: 1,
+
+    text:
+      "Identify the replacement behaviour required and explicitly teach, practise and reinforce it in the situations where it is needed."
+
+  },
+
+
+  // ---------------------------------------------------
+  // ENVIRONMENT
+  // ---------------------------------------------------
+
+  classroomEnvironment: {
+
+    id: "classroomEnvironment",
+
+    tier: 2,
+
+    text:
+      "Review classroom routines, seating, grouping and supervision arrangements and make targeted changes to reduce opportunities for further bullying behaviour."
+
+  },
+
+
+  playgroundEnvironment: {
+
+    id: "playgroundEnvironment",
+
+    tier: 2,
+
+    text:
+      "Strengthen active supervision and monitoring during identified high-risk break times and playground locations."
+
+  },
+
+
+  transitionEnvironment: {
+
+    id: "transitionEnvironment",
+
+    tier: 2,
+
+    text:
+      "Review transition, arrival/departure or transport arrangements and implement targeted supervision or other protective arrangements where required."
+
+  },
+
+
+  coordinatedEnvironment: {
+
+    id: "coordinatedEnvironment",
+
+    tier: 3,
+
+    text:
+      "Develop a coordinated supervision and environmental plan across identified high-risk settings and times, including targeted changes to routines, grouping, transitions and supervision arrangements."
+
+  },
+
+
+  // ---------------------------------------------------
+  // ADJUSTMENTS
+  // ---------------------------------------------------
+
+  adjustmentsInform: {
+
+    id: "adjustmentsInform",
+
+    tier: 1,
+
+    text:
+      "Ensure the planned response is consistent with the student's identified needs and existing reasonable adjustments."
+
+  },
+
+
+  adjustmentsReview: {
+
+    id: "adjustmentsReview",
+
+    tier: 2,
+
+    text:
+      "Review reasonable adjustments and individual support planning to ensure identified communication, regulation, sensory, learning or participation needs are adequately supported."
+
+  },
+
+
+  adjustmentsConsult: {
+
+    id: "adjustmentsConsult",
+
+    tier: 2,
+
+    text:
+      "Consult relevant staff and existing student information to determine whether individual needs or reasonable adjustments should inform the response."
+
+  },
+
+
+  // ---------------------------------------------------
+  // PEER / GROUP DYNAMICS
+  // ---------------------------------------------------
+
+  peerReinforcement: {
+
+    id: "peerReinforcement",
+
+    tier: 2,
+
+    text:
+      "Identify and address peer responses that are reinforcing the bullying behaviour, including attention, encouragement or audience behaviour."
+
+  },
+
+
+  peerParticipation: {
+
+    id: "peerParticipation",
+
+    tier: 2,
+
+    text:
+      "Follow up individually with students participating in or joining the behaviour and establish clear expectations for future behaviour."
+
+  },
+
+
+  exclusionResponse: {
+
+    id: "exclusionResponse",
+
+    tier: 2,
+
+    text:
+      "Develop a targeted response to identified social exclusion, rumours or group pressure and monitor whether these behaviours continue."
+
+  },
+
+
+  safeReporting: {
+
+    id: "safeReporting",
+
+    tier: 1,
+
+    text:
+      "Reinforce safe and accessible ways for students to report bullying concerns and seek adult assistance."
+
+  },
+
+
+  entrenchedPeers: {
+
+    id: "entrenchedPeers",
+
+    tier: 3,
+
+    text:
+      "Develop a coordinated intervention for entrenched peer-group dynamics, with clear expectations, monitoring and follow-up across relevant settings."
+
+  },
+
+
+  // ---------------------------------------------------
+  // FAMILY
+  // ---------------------------------------------------
+
+  familyRoutine: {
+
+    id: "familyRoutine",
+
+    tier: 1,
+
+    text:
+      "Inform relevant parent/carer/s of the concern, the school's response and how progress will be monitored, consistent with school processes."
+
+  },
+
+
+  familyPlanned: {
+
+    id: "familyPlanned",
+
+    tier: 2,
+
+    text:
+      "Establish an agreed schedule for family communication and provide updates on implementation, progress and emerging concerns."
+
+  },
+
+
+  familyCoordinated: {
+
+    id: "familyCoordinated",
+
+    tier: 2,
+
+    text:
+      "Develop shared goals and agreed actions with the family and identify a consistent school contact for ongoing communication and coordination."
+
+  },
+
+
+  // ---------------------------------------------------
+  // COORDINATION
+  // ---------------------------------------------------
+
+  targetedCoordination: {
+
+    id: "targetedCoordination",
+
+    tier: 2,
+
+    text:
+      "Nominate a staff member to coordinate the response and ensure relevant staff understand their responsibilities and agreed actions across settings."
+
+  },
+
+
+  multidisciplinaryCoordination: {
+
+    id: "multidisciplinaryCoordination",
+
+    tier: 3,
+
+    text:
+      "Convene a multidisciplinary case-planning meeting to coordinate assessment, intervention, responsibilities and review arrangements."
+
+  },
+
+
+  // ---------------------------------------------------
+  // PREVIOUS RESPONSE / REVIEW
+  // ---------------------------------------------------
+
+  reviewPartial: {
+
+    id: "reviewPartial",
+
+    tier: 2,
+
+    text:
+      "Review the current response to identify which strategies are having an impact and strengthen or adjust those that are not yet effective."
+
+  },
+
+
+  reviewIneffective: {
+
+    id: "reviewIneffective",
+
+    tier: 2,
+
+    text:
+      "Check whether agreed actions have been implemented consistently and use current monitoring information to identify why the response has not achieved the intended outcome."
+
+  },
+
+
+  escalatedReview: {
+
+    id: "escalatedReview",
+
+    tier: 3,
+
+    text:
+      "Convene a case review to reassess safety, impact and the effectiveness of current interventions and determine what additional or more intensive supports are required."
+
+  },
+
+
+  monitoringClarify: {
+
+    id: "monitoringClarify",
+
+    tier: 1,
+
+    text:
+      "Clarify what will be monitored, who will collect the information and when progress will be reviewed."
+
+  },
+
+
+  monitoringEstablish: {
+
+    id: "monitoringEstablish",
+
+    tier: 2,
+
+    text:
+      "Establish clear monitoring measures and responsibilities to determine whether the behaviour, safety concerns and identified impacts are reducing."
+
   }
-
-
-  // Intensive support
-  if (
-    profile.SAFETY === 2 ||
-    highDomains >= 3 ||
-    (
-      profile.IMPACT === 2 &&
-      (
-        profile.PERSISTENCE === 2 ||
-        profile.BEHAVIOUR_NEED === 2 ||
-        profile.COORDINATION === 2 ||
-        profile.ADJUSTMENTS === 2 ||
-        profile.PEER === 2
-      )
-    )
-  ) {
-    tier3 = true;
-    tier2 = true;
-  }
-
-
-  return {
-    tier1: true,
-    tier2: tier2,
-    tier3: tier3
-  };
-}
-
-
-// =====================================================
-// CONTINUUM ACTION BANK
-// =====================================================
-
-const actionBank = {
-
-  tier1: {
-
-    core: [
-      {
-        action: "Immediate assessment of safety and ongoing risk",
-        domain: "Safety, reporting and immediate response"
-      },
-      {
-        action: "Clear expectations and proportionate consequences",
-        domain: "Safety, reporting and immediate response"
-      },
-      {
-        action: "Consistent implementation of the Student Code of Conduct",
-        domain: "Individual behaviour assessment, planning and accountability"
-      },
-      {
-        action: "Consistent documentation in OneSchool",
-        domain: "Leadership, systems, documentation and review"
-      },
-      {
-        action: "Explicit teaching of respectful relationships",
-        domain: "Explicit teaching and social-emotional skill development"
-      }
-    ],
-
-
-    safety: [
-      {
-        action: "Active supervision in identified locations",
-        domain: "Safety, reporting and immediate response"
-      },
-      {
-        action: "Protection from retaliation",
-        domain: "Safety, reporting and immediate response"
-      }
-    ],
-
-
-    environment: [
-      {
-        action: "Map bullying hotspots and vulnerable times",
-        domain: "Environment, supervision and opportunity reduction"
-      },
-      {
-        action: "Review seating, grouping and transitions",
-        domain: "Environment, supervision and opportunity reduction"
-      }
-    ],
-
-
-    online: [
-      {
-        action: "Explicit teaching of digital citizenship and safe online conduct",
-        domain: "Explicit teaching and social-emotional skill development"
-      },
-      {
-        action: "Reinforce clear digital behaviour expectations",
-        domain: "Environment, supervision and opportunity reduction"
-      }
-    ],
-
-
-    behaviour: [
-      {
-        action: "Classroom correction and re-teaching",
-        domain: "Individual behaviour assessment, planning and accountability"
-      },
-      {
-        action: "Reinforce appropriate replacement behaviour",
-        domain: "Individual behaviour assessment, planning and accountability"
-      }
-    ],
-
-
-    peers: [
-      {
-        action: "Reinforce peer norms that discourage bullying and harmful reinforcement",
-        domain: "Peer-group, bystander and community response"
-      },
-      {
-        action: "Monitor group and cohort dynamics",
-        domain: "Peer-group, bystander and community response"
-      }
-    ],
-
-
-    belonging: [
-      {
-        action: "Connect the student with at least one trusted adult",
-        domain: "Positive school culture, belonging and protective experiences"
-      },
-      {
-        action: "Provide strengths-based opportunities for success and contribution",
-        domain: "Positive school culture, belonging and protective experiences"
-      }
-    ],
-
-
-    adjustments: [
-      {
-        action: "Review reasonable adjustments based on functional need",
-        domain: "Disability adjustments"
-      },
-      {
-        action: "Review predictable routines and manageable task demands",
-        domain: "Disability adjustments"
-      }
-    ],
-
-
-    wellbeing: [
-      {
-        action: "Ensure access to school wellbeing staff",
-        domain: "Wellbeing, mental health and student support services"
-      },
-      {
-        action: "Provide regular wellbeing check-ins",
-        domain: "Wellbeing, mental health and student support services"
-      }
-    ],
-
-
-    family: [
-      {
-        action: "Provide clear information to family about expectations and processes",
-        domain: "Family partnership and capability building"
-      },
-      {
-        action: "Maintain positive family contact beyond incident communication",
-        domain: "Family partnership and capability building"
-      }
-    ]
-
-  },
-
-
-  tier2: {
-
-    safety: [
-      {
-        action: "Schedule follow-up with affected students",
-        domain: "Safety, reporting and immediate response"
-      },
-      {
-        action: "Develop an individual safety and support plan",
-        domain: "Safety, reporting and immediate response"
-      },
-      {
-        action: "Identify safe locations and staff contacts",
-        domain: "Safety, reporting and immediate response"
-      },
-      {
-        action: "Complete a short-cycle review of whether harm has stopped",
-        domain: "Safety, reporting and immediate response"
-      }
-    ],
-
-
-    persistence: [
-      {
-        action: "Analyse patterns in frequency, location, peers, triggers and impact",
-        domain: "Safety, reporting and immediate response"
-      },
-      {
-        action: "Establish baseline measures and measurable goals",
-        domain: "Leadership, systems, documentation and review"
-      }
-    ],
-
-
-    behaviour: [
-      {
-        action: "Establish individual behaviour goals and progress monitoring",
-        domain: "Individual behaviour assessment, planning and accountability"
-      },
-      {
-        action: "Develop a targeted Behaviour Support Plan",
-        domain: "Individual behaviour assessment, planning and accountability"
-      },
-      {
-        action: "Assess triggers and factors maintaining the behaviour",
-        domain: "Individual behaviour assessment, planning and accountability"
-      },
-      {
-        action: "Collect and analyse ABC data",
-        domain: "Individual behaviour assessment, planning and accountability"
-      },
-      {
-        action: "Implement Check In/Check Out linked to expectations",
-        domain: "Individual behaviour assessment, planning and accountability"
-      }
-    ],
-
-
-    teaching: [
-      {
-        action: "Provide individual or small-group teaching of identified skill gaps",
-        domain: "Explicit teaching and social-emotional skill development"
-      },
-      {
-        action: "Use behaviour rehearsal, modelling and role-play",
-        domain: "Explicit teaching and social-emotional skill development"
-      },
-      {
-        action: "Teach emotional regulation and impulse-control strategies",
-        domain: "Explicit teaching and social-emotional skill development"
-      },
-      {
-        action: "Use pre-correction before predictable high-risk situations",
-        domain: "Explicit teaching and social-emotional skill development"
-      }
-    ],
-
-
-    environment: [
-      {
-        action: "Target monitoring across relevant classes, breaks, transport and transitions",
-        domain: "Safety, reporting and immediate response"
-      },
-      {
-        action: "Increase supervision during identified high-risk times",
-        domain: "Environment, supervision and opportunity reduction"
-      },
-      {
-        action: "Develop an individual seating and grouping plan",
-        domain: "Environment, supervision and opportunity reduction"
-      },
-      {
-        action: "Provide supported transitions between classes or locations",
-        domain: "Environment, supervision and opportunity reduction"
-      }
-    ],
-
-
-    online: [
-      {
-        action: "Temporarily adjust access to devices, platforms or group chats where appropriate",
-        domain: "Environment, supervision and opportunity reduction"
-      },
-      {
-        action: "Provide digital behaviour coaching and supervised technology use",
-        domain: "Explicit teaching and social-emotional skill development"
-      }
-    ],
-
-
-    peers: [
-      {
-        action: "Provide targeted intervention for peers reinforcing the behaviour",
-        domain: "Peer-group, bystander and community response"
-      },
-      {
-        action: "Undertake peer-group work where broader dynamics maintain the behaviour",
-        domain: "Peer-group, bystander and community response"
-      },
-      {
-        action: "Use strategic regrouping where appropriate",
-        domain: "Peer-group, bystander and community response"
-      },
-      {
-        action: "Follow up rumours, retaliation and social exclusion",
-        domain: "Peer-group, bystander and community response"
-      }
-    ],
-
-
-    belonging: [
-      {
-        action: "Implement daily or scheduled Check In/Check Out",
-        domain: "Positive school culture, belonging and protective experiences"
-      },
-      {
-        action: "Allocate a trusted adult, mentor or year-level contact",
-        domain: "Positive school culture, belonging and protective experiences"
-      },
-      {
-        action: "Establish individual belonging and engagement goals",
-        domain: "Positive school culture, belonging and protective experiences"
-      },
-      {
-        action: "Plan opportunities for safe peer success",
-        domain: "Positive school culture, belonging and protective experiences"
-      }
-    ],
-
-
-    adjustments: [
-      {
-        action: "Review personalised learning and adjustment plans",
-        domain: "Disability adjustments"
-      },
-      {
-        action: "Reduce cognitive or sensory overload during high-risk periods",
-        domain: "Disability adjustments"
-      },
-      {
-        action: "Schedule movement, sensory or regulation breaks",
-        domain: "Disability adjustments"
-      },
-      {
-        action: "Consult HOSES, inclusion staff or specialist teachers",
-        domain: "Disability adjustments"
-      }
-    ],
-
-
-    wellbeing: [
-      {
-        action: "Seek Guidance Officer consultation or referral",
-        domain: "Wellbeing, mental health and student support services"
-      },
-      {
-        action: "Develop an individual emotional regulation or coping plan",
-        domain: "Wellbeing, mental health and student support services"
-      },
-      {
-        action: "Schedule frequent positive wellbeing checks",
-        domain: "Wellbeing, mental health and student support services"
-      }
-    ],
-
-
-    family: [
-      {
-        action: "Schedule family contact and progress updates",
-        domain: "Family partnership and capability building"
-      },
-      {
-        action: "Establish shared goals and consistent language across home and school",
-        domain: "Family partnership and capability building"
-      },
-      {
-        action: "Nominate a dedicated school contact or case coordinator",
-        domain: "Family partnership and capability building"
-      }
-    ],
-
-
-    coordination: [
-      {
-        action: "Nominate a case coordinator",
-        domain: "Leadership, systems, documentation and review"
-      },
-      {
-        action: "Convene a Team Around the Student / case meeting",
-        domain: "Leadership, systems, documentation and review"
-      },
-      {
-        action: "Develop a documented intervention plan across relevant domains",
-        domain: "Leadership, systems, documentation and review"
-      },
-      {
-        action: "Coordinate communication across relevant staff",
-        domain: "Leadership, systems, documentation and review"
-      }
-    ],
-
-
-    responseHistory: [
-      {
-        action: "Check whether agreed supports were implemented as intended",
-        domain: "Leadership, systems, documentation and review"
-      },
-      {
-        action: "Review whether frequency, severity and impact have reduced",
-        domain: "Leadership, systems, documentation and review"
-      },
-      {
-        action: "Set escalation criteria if targeted support is ineffective",
-        domain: "Leadership, systems, documentation and review"
-      }
-    ]
-
-  },
-
-
-  tier3: {
-
-    core: [
-      {
-        action: "Establish formal multidisciplinary case management",
-        domain: "Leadership, systems, documentation and review"
-      },
-      {
-        action: "Conduct a complex case review with assigned actions",
-        domain: "Leadership, systems, documentation and review"
-      },
-      {
-        action: "Implement intensive implementation and outcome monitoring",
-        domain: "Leadership, systems, documentation and review"
-      }
-    ],
-
-
-    safety: [
-      {
-        action: "Develop a comprehensive risk and safety plan",
-        domain: "Safety, reporting and immediate response"
-      },
-      {
-        action: "Establish immediate senior leadership oversight and case management",
-        domain: "Safety, reporting and immediate response"
-      },
-      {
-        action: "Implement supervised arrival, departure, movement and transitions",
-        domain: "Safety, reporting and immediate response"
-      },
-      {
-        action: "Establish formal multi-agency safety planning where required",
-        domain: "Safety, reporting and immediate response"
-      }
-    ],
-
-
-    behaviour: [
-      {
-        action: "Complete a comprehensive Functional Behaviour Assessment",
-        domain: "Individual behaviour assessment, planning and accountability"
-      },
-      {
-        action: "Develop an Individual Behaviour Support Plan through a multidisciplinary team",
-        domain: "Individual behaviour assessment, planning and accountability"
-      },
-      {
-        action: "Seek specialist behaviour, inclusion or disability consultation",
-        domain: "Individual behaviour assessment, planning and accountability"
-      },
-      {
-        action: "Implement intensive data collection and fidelity monitoring",
-        domain: "Individual behaviour assessment, planning and accountability"
-      }
-    ],
-
-
-    teaching: [
-      {
-        action: "Implement an intensive individual skills program informed by assessment",
-        domain: "Explicit teaching and social-emotional skill development"
-      },
-      {
-        action: "Teach functional communication and replacement skills",
-        domain: "Explicit teaching and social-emotional skill development"
-      },
-      {
-        action: "Provide repeated practice across settings with adult coaching",
-        domain: "Explicit teaching and social-emotional skill development"
-      }
-    ],
-
-
-    environment: [
-      {
-        action: "Modify class, subject, timetable, transport or playground arrangements where required",
-        domain: "Environment, supervision and opportunity reduction"
-      },
-      {
-        action: "Implement individual escort or direct handover arrangements",
-        domain: "Environment, supervision and opportunity reduction"
-      },
-      {
-        action: "Implement an intensive adult supervision plan",
-        domain: "Environment, supervision and opportunity reduction"
-      },
-      {
-        action: "Complete a formal review before reducing protective arrangements",
-        domain: "Environment, supervision and opportunity reduction"
-      }
-    ],
-
-
-    peers: [
-      {
-        action: "Implement intensive intervention for entrenched peer-group dynamics",
-        domain: "Peer-group, bystander and community response"
-      },
-      {
-        action: "Establish multi-student case coordination",
-        domain: "Peer-group, bystander and community response"
-      },
-      {
-        action: "Use structured separation and gradual reintegration where required",
-        domain: "Peer-group, bystander and community response"
-      },
-      {
-        action: "Monitor retaliation and coercion over time",
-        domain: "Peer-group, bystander and community response"
-      }
-    ],
-
-
-    belonging: [
-      {
-        action: "Provide intensive relational mentoring or case management",
-        domain: "Positive school culture, belonging and protective experiences"
-      },
-      {
-        action: "Develop wraparound planning with family and agencies",
-        domain: "Positive school culture, belonging and protective experiences"
-      },
-      {
-        action: "Develop a re-engagement plan following disengagement or suspension",
-        domain: "Positive school culture, belonging and protective experiences"
-      }
-    ],
-
-
-    adjustments: [
-      {
-        action: "Complete a comprehensive review of disability adjustments and access",
-        domain: "Disability adjustments"
-      },
-      {
-        action: "Seek specialist assessment of communication, sensory, executive-function or learning needs",
-        domain: "Disability adjustments"
-      },
-      {
-        action: "Develop an individualised timetable, curriculum or environment",
-        domain: "Disability adjustments"
-      },
-      {
-        action: "Seek regional inclusion or complex-case support",
-        domain: "Disability adjustments"
-      }
-    ],
-
-
-    wellbeing: [
-      {
-        action: "Seek immediate wellbeing or mental health assessment where risk is elevated",
-        domain: "Wellbeing, mental health and student support services"
-      },
-      {
-        action: "Develop safety planning for co-occurring risks",
-        domain: "Wellbeing, mental health and student support services"
-      },
-      {
-        action: "Establish coordinated school-health case planning",
-        domain: "Wellbeing, mental health and student support services"
-      }
-    ],
-
-
-    family: [
-      {
-        action: "Undertake intensive family planning and case conferencing",
-        domain: "Family partnership and capability building"
-      },
-      {
-        action: "Nominate a dedicated school contact or case manager",
-        domain: "Family partnership and capability building"
-      },
-      {
-        action: "Develop a coordinated family-school-agency plan",
-        domain: "Family partnership and capability building"
-      }
-    ],
-
-
-    coordination: [
-      {
-        action: "Seek regional or central-office consultation",
-        domain: "Leadership, systems, documentation and review"
-      },
-      {
-        action: "Establish executive oversight of risk and procedural compliance",
-        domain: "Leadership, systems, documentation and review"
-      },
-      {
-        action: "Consider brokerage application where appropriate",
-        domain: "Leadership, systems, documentation and review"
-      }
-    ]
-
-  },
-
-
-  review: [
-    {
-      action: "Set a scheduled review date",
-      domain: "Leadership, systems, documentation and review"
-    },
-    {
-      action: "Confirm whether agreed actions were implemented",
-      domain: "Leadership, systems, documentation and review"
-    },
-    {
-      action: "Review whether frequency, severity and impact have reduced",
-      domain: "Leadership, systems, documentation and review"
-    },
-    {
-      action: "Confirm whether safety, engagement and belonging have improved",
-      domain: "Leadership, systems, documentation and review"
-    }
-  ]
 
 };
+
+
+// =====================================================
+// ACTION COLLECTION / DEDUPLICATION
+// =====================================================
+
+function createActionState() {
+
+  return new Map();
+
+}
+
+
+function addCandidate(
+  state,
+  actionKey
+) {
+
+  const action =
+    ACTIONS[actionKey];
+
+
+  if (!action) {
+    return;
+  }
+
+
+  const existing =
+    state.get(action.id);
+
+
+  if (
+    !existing ||
+    action.tier > existing.tier
+  ) {
+
+    state.set(
+      action.id,
+      { ...action }
+    );
+
+  }
+
+}
+
+
+function removeCandidate(
+  state,
+  actionKey
+) {
+
+  const action =
+    ACTIONS[actionKey];
+
+
+  if (action) {
+    state.delete(action.id);
+  }
+
+}
+
+
+function supersede(
+  state,
+  strongerKey,
+  weakerKeys
+) {
+
+  addCandidate(
+    state,
+    strongerKey
+  );
+
+
+  weakerKeys.forEach(
+    function (key) {
+
+      removeCandidate(
+        state,
+        key
+      );
+
+    }
+  );
+
+}
+
+
+// =====================================================
+// BUILD SUGGESTED ACTIONS
+// =====================================================
+
+function buildSuggestedActions(
+  answers
+) {
+
+  const state =
+    createActionState();
+
+
+  // ===================================================
+  // Q1 — PATTERN
+  // ===================================================
+
+  if (
+    answers.pattern === "emerging"
+  ) {
+
+    addCandidate(
+      state,
+      "shortMonitoring"
+    );
+
+  }
+
+
+  if (
+    answers.pattern === "repeated"
+  ) {
+
+    addCandidate(
+      state,
+      "patternAnalysis"
+    );
+
+  }
+
+
+  if (
+    answers.pattern === "sustained"
+  ) {
+
+    addCandidate(
+      state,
+      "coordinatedMonitoring"
+    );
+
+  }
+
+
+  // ===================================================
+  // Q2 — POWER
+  // ===================================================
+
+  if (
+    answers.power === "unclear"
+  ) {
+
+    addCandidate(
+      state,
+      "clarifySituation"
+    );
+
+  }
+
+
+  // ===================================================
+  // Q3 — CONTEXT
+  // ===================================================
+
+  if (
+    answers.contexts.includes(
+      "online"
+    )
+  ) {
+
+    addCandidate(
+      state,
+      "digitalResponse"
+    );
+
+  }
+
+
+  // ===================================================
+  // Q4 — SAFETY
+  // ===================================================
+
+  if (
+    answers.safety === "some"
+  ) {
+
+    addCandidate(
+      state,
+      "practicalSafety"
+    );
+
+    addCandidate(
+      state,
+      "trustedAdult"
+    );
+
+  }
+
+
+  if (
+    answers.safety === "significant"
+  ) {
+
+    addCandidate(
+      state,
+      "safetyPlan"
+    );
+
+    addCandidate(
+      state,
+      "intensiveProtection"
+    );
+
+    removeCandidate(
+      state,
+      "practicalSafety"
+    );
+
+  }
+
+
+  // ===================================================
+  // Q5 — IMPACT
+  // ===================================================
+
+  if (
+    !answers.impacts.includes(
+      "none"
+    )
+  ) {
+
+    if (
+      answers.impacts.includes(
+        "emotional"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "emotionalSupport"
+      );
+
+    }
+
+
+    if (
+      answers.impacts.includes(
+        "engagement"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "engagementSupport"
+      );
+
+    }
+
+
+    if (
+      answers.impacts.includes(
+        "avoidance"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "avoidanceSupport"
+      );
+
+    }
+
+
+    if (
+      answers.impacts.includes(
+        "attendance"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "attendanceSupport"
+      );
+
+    }
+
+
+    if (
+      answers.impacts.includes(
+        "isolation"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "peerConnection"
+      );
+
+    }
+
+
+    if (
+      answers.impacts.includes(
+        "wellbeing"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "wellbeingReferral"
+      );
+
+    }
+
+  }
+
+
+  // ===================================================
+  // Q6 — UNDERSTANDING BEHAVIOUR
+  // ===================================================
+
+  if (
+    answers.behaviourUnderstanding ===
+    "partial"
+  ) {
+
+    addCandidate(
+      state,
+      "behaviourInfo"
+    );
+
+  }
+
+
+  if (
+    answers.behaviourUnderstanding ===
+    "unclear"
+  ) {
+
+    addCandidate(
+      state,
+      "structuredBehaviourAssessment"
+    );
+
+  }
+
+
+  // ===================================================
+  // Q7 — SKILLS
+  // ===================================================
+
+  if (
+    !answers.skills.includes(
+      "none"
+    )
+  ) {
+
+    if (
+      answers.skills.includes(
+        "respectful"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "respectfulSkills"
+      );
+
+    }
+
+
+    if (
+      answers.skills.includes(
+        "conflict"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "conflictSkills"
+      );
+
+    }
+
+
+    if (
+      answers.skills.includes(
+        "regulation"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "regulationSkills"
+      );
+
+    }
+
+
+    if (
+      answers.skills.includes(
+        "perspective"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "perspectiveSkills"
+      );
+
+    }
+
+
+    if (
+      answers.skills.includes(
+        "connection"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "connectionSkills"
+      );
+
+    }
+
+
+    if (
+      answers.skills.includes(
+        "problemSolving"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "problemSolvingSkills"
+      );
+
+    }
+
+
+    if (
+      answers.skills.includes(
+        "digital"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "digitalSkills"
+      );
+
+    }
+
+
+    if (
+      answers.skills.includes(
+        "other"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "otherSkill"
+      );
+
+    }
+
+  }
+
+
+  // ===================================================
+  // Q8 — ENVIRONMENT + Q3 CONTEXT
+  // ===================================================
+
+  if (
+    answers.environment !== "none"
+  ) {
+
+    const physicalContexts =
+      answers.contexts.filter(
+        function (value) {
+
+          return [
+            "classroom",
+            "playground",
+            "transitions"
+          ].includes(value);
+
+        }
+      );
+
+
+    if (
+      answers.environment ===
+        "significant" &&
+      physicalContexts.length >= 2
+    ) {
+
+      supersede(
+        state,
+        "coordinatedEnvironment",
+        [
+          "classroomEnvironment",
+          "playgroundEnvironment",
+          "transitionEnvironment"
+        ]
+      );
+
+    } else {
+
+      if (
+        answers.contexts.includes(
+          "classroom"
+        )
+      ) {
+
+        addCandidate(
+          state,
+          "classroomEnvironment"
+        );
+
+      }
+
+
+      if (
+        answers.contexts.includes(
+          "playground"
+        )
+      ) {
+
+        addCandidate(
+          state,
+          "playgroundEnvironment"
+        );
+
+      }
+
+
+      if (
+        answers.contexts.includes(
+          "transitions"
+        )
+      ) {
+
+        addCandidate(
+          state,
+          "transitionEnvironment"
+        );
+
+      }
+
+    }
+
+  }
+
+
+  // ===================================================
+  // Q9 — ADJUSTMENTS
+  // ===================================================
+
+  if (
+    answers.adjustments === "inform"
+  ) {
+
+    addCandidate(
+      state,
+      "adjustmentsInform"
+    );
+
+  }
+
+
+  if (
+    answers.adjustments === "review"
+  ) {
+
+    addCandidate(
+      state,
+      "adjustmentsReview"
+    );
+
+  }
+
+
+  if (
+    answers.adjustments === "unclear"
+  ) {
+
+    addCandidate(
+      state,
+      "adjustmentsConsult"
+    );
+
+  }
+
+
+  // ===================================================
+  // Q10 — PEER DYNAMICS
+  // ===================================================
+
+  if (
+    !answers.peerDynamics.includes(
+      "none"
+    )
+  ) {
+
+    if (
+      answers.peerDynamics.includes(
+        "reinforcement"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "peerReinforcement"
+      );
+
+    }
+
+
+    if (
+      answers.peerDynamics.includes(
+        "participation"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "peerParticipation"
+      );
+
+    }
+
+
+    if (
+      answers.peerDynamics.includes(
+        "exclusion"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "exclusionResponse"
+      );
+
+    }
+
+
+    if (
+      answers.peerDynamics.includes(
+        "reporting"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "safeReporting"
+      );
+
+    }
+
+
+    if (
+      answers.peerDynamics.includes(
+        "entrenched"
+      )
+    ) {
+
+      addCandidate(
+        state,
+        "entrenchedPeers"
+      );
+
+    }
+
+  }
+
+
+  // ===================================================
+  // Q11 — TRUSTED ADULT
+  // ===================================================
+
+  if (
+    answers.trustedAdult === "partial" ||
+    answers.trustedAdult === "no"
+  ) {
+
+    addCandidate(
+      state,
+      "trustedAdult"
+    );
+
+  }
+
+
+  // ===================================================
+  // Q12 — FAMILY
+  // ===================================================
+
+  if (
+    answers.family === "routine"
+  ) {
+
+    addCandidate(
+      state,
+      "familyRoutine"
+    );
+
+  }
+
+
+  if (
+    answers.family === "planned"
+  ) {
+
+    addCandidate(
+      state,
+      "familyPlanned"
+    );
+
+  }
+
+
+  if (
+    answers.family === "coordinated"
+  ) {
+
+    addCandidate(
+      state,
+      "familyCoordinated"
+    );
+
+  }
+
+
+  // ===================================================
+  // Q13 — COORDINATION
+  // ===================================================
+
+  if (
+    answers.coordination ===
+    "targeted"
+  ) {
+
+    addCandidate(
+      state,
+      "targetedCoordination"
+    );
+
+  }
+
+
+  if (
+    answers.coordination ===
+    "multidisciplinary"
+  ) {
+
+    addCandidate(
+      state,
+      "multidisciplinaryCoordination"
+    );
+
+  }
+
+
+  // ===================================================
+  // Q14 — PREVIOUS RESPONSE
+  // ===================================================
+
+  if (
+    answers.previousResponse ===
+    "partial"
+  ) {
+
+    addCandidate(
+      state,
+      "reviewPartial"
+    );
+
+  }
+
+
+  if (
+    answers.previousResponse ===
+    "ineffective"
+  ) {
+
+    addCandidate(
+      state,
+      "reviewIneffective"
+    );
+
+  }
+
+
+  if (
+    answers.previousResponse ===
+    "escalated"
+  ) {
+
+    addCandidate(
+      state,
+      "escalatedReview"
+    );
+
+  }
+
+
+  // ===================================================
+  // Q15 — MONITORING
+  // ===================================================
+
+  if (
+    answers.monitoring === "partial"
+  ) {
+
+    addCandidate(
+      state,
+      "monitoringClarify"
+    );
+
+  }
+
+
+  if (
+    answers.monitoring === "no"
+  ) {
+
+    addCandidate(
+      state,
+      "monitoringEstablish"
+    );
+
+  }
+
+
+  // ===================================================
+  // CROSS-QUESTION ESCALATION
+  // ===================================================
+
+  const responseNotWorking =
+    [
+      "ineffective",
+      "escalated"
+    ].includes(
+      answers.previousResponse
+    );
+
+
+  // Sustained + poorly understood + unsuccessful
+  // intervention warrants stronger assessment.
+
+  if (
+    answers.pattern === "sustained" &&
+    answers.behaviourUnderstanding ===
+      "unclear" &&
+    responseNotWorking
+  ) {
+
+    supersede(
+      state,
+      "intensiveBehaviourAssessment",
+      [
+        "behaviourInfo",
+        "structuredBehaviourAssessment",
+        "patternAnalysis"
+      ]
+    );
+
+  }
+
+
+  // Significant environmental conditions across
+  // several physical settings warrant one coordinated
+  // environmental plan rather than several duplicates.
+
+  const physicalContexts =
+    answers.contexts.filter(
+      function (value) {
+
+        return [
+          "classroom",
+          "playground",
+          "transitions"
+        ].includes(value);
+
+      }
+    );
+
+
+  if (
+    answers.environment ===
+      "significant" &&
+    physicalContexts.length >= 2
+  ) {
+
+    supersede(
+      state,
+      "coordinatedEnvironment",
+      [
+        "classroomEnvironment",
+        "playgroundEnvironment",
+        "transitionEnvironment"
+      ]
+    );
+
+  }
+
+
+  // ===================================================
+  // CONSOLIDATION / REMOVE REPETITION
+  // ===================================================
+
+
+  // Comprehensive safety planning already includes
+  // identification of trusted supports unless the
+  // principal has explicitly identified that no trusted
+  // adult currently exists.
+
+  if (
+    state.has("safetyPlan") &&
+    answers.trustedAdult !== "no"
+  ) {
+
+    removeCandidate(
+      state,
+      "trustedAdult"
+    );
+
+  }
+
+
+  // Stronger pattern monitoring replaces emerging
+  // short-term monitoring.
+
+  if (
+    state.has("coordinatedMonitoring")
+  ) {
+
+    removeCandidate(
+      state,
+      "shortMonitoring"
+    );
+
+  }
+
+
+  if (
+    state.has("patternAnalysis")
+  ) {
+
+    removeCandidate(
+      state,
+      "shortMonitoring"
+    );
+
+  }
+
+
+  // Intensive behaviour assessment replaces weaker
+  // assessment versions.
+
+  if (
+    state.has(
+      "intensiveBehaviourAssessment"
+    )
+  ) {
+
+    removeCandidate(
+      state,
+      "behaviourInfo"
+    );
+
+    removeCandidate(
+      state,
+      "structuredBehaviourAssessment"
+    );
+
+  }
+
+
+  // Family actions should escalate rather than repeat.
+
+  if (
+    state.has("familyCoordinated")
+  ) {
+
+    removeCandidate(
+      state,
+      "familyRoutine"
+    );
+
+    removeCandidate(
+      state,
+      "familyPlanned"
+    );
+
+  } else if (
+    state.has("familyPlanned")
+  ) {
+
+    removeCandidate(
+      state,
+      "familyRoutine"
+    );
+
+  }
+
+
+  // Multidisciplinary coordination replaces ordinary
+  // targeted coordination.
+
+  if (
+    state.has(
+      "multidisciplinaryCoordination"
+    )
+  ) {
+
+    removeCandidate(
+      state,
+      "targetedCoordination"
+    );
+
+  }
+
+
+  // A comprehensive safety plan should already deal
+  // with safe access/avoidance arrangements.
+
+  if (
+    state.has("safetyPlan") &&
+    answers.impacts.includes(
+      "avoidance"
+    )
+  ) {
+
+    removeCandidate(
+      state,
+      "avoidanceSupport"
+    );
+
+  }
+
+
+  // Significant wellbeing support supersedes a generic
+  // emotional check-in action.
+
+  if (
+    state.has("wellbeingReferral")
+  ) {
+
+    removeCandidate(
+      state,
+      "emotionalSupport"
+    );
+
+  }
+
+
+  // Entrenched peer-group work absorbs generic peer
+  // reinforcement work. Specific exclusion or individual
+  // participation actions can remain.
+
+  if (
+    state.has("entrenchedPeers")
+  ) {
+
+    removeCandidate(
+      state,
+      "peerReinforcement"
+    );
+
+  }
+
+
+  // ===================================================
+  // RETURN ACTIONS
+  // ===================================================
+
+  return Array.from(
+    state.values()
+  ).sort(
+    function (a, b) {
+      return a.tier - b.tier;
+    }
+  );
+
+}
 
 
 // =====================================================
@@ -1083,70 +2204,93 @@ const actionBank = {
 // =====================================================
 
 function generateActionPlan() {
-  const answers = getAnswers();
 
-  const unanswered =
-    Object.values(answers).some(function (value) {
-      return value === "";
-    });
+  const answers =
+    getAnswers();
 
-  if (unanswered) {
-    alert(
-      "Please complete all questions before generating the action plan."
+
+  const actions =
+    buildSuggestedActions(
+      answers
     );
-    return;
+
+
+  buildActionPlan(
+    actions,
+    answers
+  );
+
+
+  if (questionnaire) {
+    questionnaire.classList.add(
+      "hidden"
+    );
   }
 
-  const profile = buildDecisionProfile(answers);
-  const tiers = determineTiers(profile);
 
-  buildActionPlan(answers, profile, tiers);
+  if (actionPlan) {
+    actionPlan.classList.remove(
+      "hidden"
+    );
+  }
 
-  questionnaire.classList.add("hidden");
-  actionPlan.classList.remove("hidden");
 
   setDefaultPlanDate();
+
   updateSelectedCount();
+
 
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
+
 }
 
 
 // =====================================================
-// ACTION ROW CREATION
+// CREATE SUGGESTED ACTION ROW
 // =====================================================
 
-function addAction(container, action, domain) {
+function addSuggestedAction(
+  container,
+  action
+) {
+
   if (!container) {
     return;
   }
 
-  // Avoid duplicates within a section.
-  const existingActions =
-    Array.from(
-      container.querySelectorAll(".action-content strong")
-    ).map(function (element) {
-      return element.textContent.trim();
-    });
 
-  if (existingActions.includes(action)) {
-    return;
-  }
+  const row =
+    document.createElement("tr");
 
-  const row = document.createElement("tr");
 
-  const selectCell = document.createElement("td");
-  selectCell.className = "check-cell";
+  row.dataset.actionId =
+    action.id;
 
-  const checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  checkbox.className = "action-checkbox";
+
+  // SELECT
+
+  const selectCell =
+    document.createElement("td");
+
+  selectCell.className =
+    "check-cell";
+
+
+  const checkbox =
+    document.createElement("input");
+
+  checkbox.type =
+    "checkbox";
+
+  checkbox.className =
+    "action-checkbox";
+
   checkbox.setAttribute(
     "aria-label",
-    `Select action: ${action}`
+    `Select action: ${action.text}`
   );
 
   checkbox.addEventListener(
@@ -1154,521 +2298,517 @@ function addAction(container, action, domain) {
     updateSelectedCount
   );
 
-  selectCell.appendChild(checkbox);
+
+  selectCell.appendChild(
+    checkbox
+  );
 
 
-  const actionCell = document.createElement("td");
-  actionCell.className = "action-content";
+  // ACTION
 
-  const strong = document.createElement("strong");
-  strong.textContent = action;
+  const actionCell =
+    document.createElement("td");
 
-  const domainText = document.createElement("span");
-  domainText.textContent =
-    `Continuum domain: ${domain}`;
+  actionCell.className =
+    "action-content";
 
-  actionCell.appendChild(strong);
-  actionCell.appendChild(domainText);
 
+  const strong =
+    document.createElement("strong");
+
+  strong.textContent =
+    action.text;
+
+
+  actionCell.appendChild(
+    strong
+  );
+
+
+  // RESPONSIBLE
 
   const responsibleCell =
     document.createElement("td");
 
+
   const responsibleInput =
     document.createElement("input");
 
-  responsibleInput.type = "text";
-  responsibleInput.className = "plan-input";
-  responsibleInput.placeholder = "Name / role";
+  responsibleInput.type =
+    "text";
+
+  responsibleInput.className =
+    "plan-input";
+
+  responsibleInput.placeholder =
+    "Name / role";
+
   responsibleInput.setAttribute(
     "aria-label",
-    `Responsible person for ${action}`
+    `Responsible person for ${action.text}`
   );
+
 
   responsibleCell.appendChild(
     responsibleInput
   );
 
 
+  // DATE
+
   const dateCell =
     document.createElement("td");
+
 
   const dateInput =
     document.createElement("input");
 
-  dateInput.type = "date";
+  dateInput.type =
+    "date";
+
   dateInput.className =
     "plan-input date-input";
 
   dateInput.setAttribute(
     "aria-label",
-    `Due date for ${action}`
+    `Due date for ${action.text}`
   );
 
-  dateCell.appendChild(dateInput);
+
+  dateCell.appendChild(
+    dateInput
+  );
 
 
-  row.appendChild(selectCell);
-  row.appendChild(actionCell);
-  row.appendChild(responsibleCell);
-  row.appendChild(dateCell);
+  // ROW
 
-  container.appendChild(row);
-}
+  row.appendChild(
+    selectCell
+  );
+
+  row.appendChild(
+    actionCell
+  );
+
+  row.appendChild(
+    responsibleCell
+  );
+
+  row.appendChild(
+    dateCell
+  );
 
 
-function addActionGroup(container, actions) {
-  actions.forEach(function (item) {
-    addAction(
-      container,
-      item.action,
-      item.domain
-    );
-  });
+  container.appendChild(
+    row
+  );
+
 }
 
 
 // =====================================================
-// CLEAR GENERATED PLAN
+// CLEAR GENERATED ACTIONS
 // =====================================================
 
-function clearActionPlan() {
+function clearGeneratedActions() {
+
   [
-    "safetyActions",
     "tier1Actions",
     "tier2Actions",
     "tier3Actions",
     "reviewActions"
-  ].forEach(function (id) {
-    const container =
-      document.getElementById(id);
+  ].forEach(
+    function (id) {
 
-    if (container) {
-      container.innerHTML = "";
+      const element =
+        document.getElementById(id);
+
+      if (element) {
+        element.innerHTML = "";
+      }
+
     }
-  });
+  );
 
 
-  const safetySection =
-    document.getElementById("safetySection");
+  [
+    "tier1Section",
+    "tier2Section",
+    "tier3Section"
+  ].forEach(
+    function (id) {
 
-  const tier2Section =
-    document.getElementById("tier2Section");
+      const element =
+        document.getElementById(id);
 
-  const tier3Section =
-    document.getElementById("tier3Section");
+      if (element) {
+        element.classList.add(
+          "hidden"
+        );
+      }
+
+    }
+  );
 
 
-  if (safetySection) {
-    safetySection.classList.add("hidden");
+  if (monitoringActionsWrap) {
+
+    monitoringActionsWrap.classList.add(
+      "hidden"
+    );
+
   }
 
-  if (tier2Section) {
-    tier2Section.classList.add("hidden");
-  }
-
-  if (tier3Section) {
-    tier3Section.classList.add("hidden");
-  }
 }
 
 
 // =====================================================
-// BUILD GENERATED PLAN
+// BUILD ACTION PLAN
 // =====================================================
 
-function buildActionPlan(answers, profile, tiers) {
-  clearActionPlan();
+function buildActionPlan(
+  actions,
+  answers
+) {
 
-  const safetyActions =
-    document.getElementById("safetyActions");
+  clearGeneratedActions();
+
 
   const tier1Actions =
-    document.getElementById("tier1Actions");
+    document.getElementById(
+      "tier1Actions"
+    );
 
   const tier2Actions =
-    document.getElementById("tier2Actions");
+    document.getElementById(
+      "tier2Actions"
+    );
 
   const tier3Actions =
-    document.getElementById("tier3Actions");
+    document.getElementById(
+      "tier3Actions"
+    );
 
   const reviewActions =
-    document.getElementById("reviewActions");
-
-
-  // ===================================================
-  // IMMEDIATE SAFETY
-  // ===================================================
-
-  if (profile.SAFETY > 0) {
-    const safetySection =
-      document.getElementById("safetySection");
-
-    safetySection.classList.remove("hidden");
-
-    addAction(
-      safetyActions,
-      "Immediate assessment of safety and ongoing risk",
-      "Safety, reporting and immediate response"
-    );
-
-    addAction(
-      safetyActions,
-      "Protection from retaliation",
-      "Safety, reporting and immediate response"
+    document.getElementById(
+      "reviewActions"
     );
 
 
-    if (profile.SAFETY === 2) {
-      addAction(
-        safetyActions,
-        "Develop a comprehensive risk and safety plan",
-        "Safety, reporting and immediate response"
-      );
+  const reviewIds =
+    new Set([
+      "reviewPartial",
+      "reviewIneffective",
+      "escalatedReview",
+      "monitoringClarify",
+      "monitoringEstablish"
+    ]);
 
-      addAction(
-        safetyActions,
-        "Establish immediate senior leadership oversight and case management",
-        "Safety, reporting and immediate response"
-      );
+
+  actions.forEach(
+    function (action) {
+
+      if (
+        reviewIds.has(
+          action.id
+        )
+      ) {
+
+        addSuggestedAction(
+          reviewActions,
+          action
+        );
+
+        return;
+
+      }
+
+
+      if (action.tier === 1) {
+
+        addSuggestedAction(
+          tier1Actions,
+          action
+        );
+
+      }
+
+
+      if (action.tier === 2) {
+
+        addSuggestedAction(
+          tier2Actions,
+          action
+        );
+
+      }
+
+
+      if (action.tier === 3) {
+
+        addSuggestedAction(
+          tier3Actions,
+          action
+        );
+
+      }
+
     }
-  }
-
-
-  // ===================================================
-  // TIER 1
-  // ===================================================
-
-  addActionGroup(
-    tier1Actions,
-    actionBank.tier1.core
   );
 
 
-  if (profile.SAFETY > 0) {
-    addActionGroup(
-      tier1Actions,
-      actionBank.tier1.safety
-    );
-  }
+  toggleSectionByRows(
+    "tier1Section",
+    tier1Actions
+  );
 
 
-  if (
-    profile.ENVIRONMENT > 0 ||
-    answers.context === "multiple" ||
-    answers.context === "mixed"
-  ) {
-    addActionGroup(
-      tier1Actions,
-      actionBank.tier1.environment
-    );
-  }
+  toggleSectionByRows(
+    "tier2Section",
+    tier2Actions
+  );
 
 
-  if (
-    answers.context === "online" ||
-    answers.context === "mixed"
-  ) {
-    addActionGroup(
-      tier1Actions,
-      actionBank.tier1.online
-    );
-  }
-
-
-  if (profile.BEHAVIOUR_NEED > 0) {
-    addActionGroup(
-      tier1Actions,
-      actionBank.tier1.behaviour
-    );
-  }
-
-
-  if (profile.PEER > 0) {
-    addActionGroup(
-      tier1Actions,
-      actionBank.tier1.peers
-    );
-  }
-
-
-  if (profile.WELLBEING_CONNECTION > 0) {
-    addActionGroup(
-      tier1Actions,
-      actionBank.tier1.belonging
-    );
-
-    addActionGroup(
-      tier1Actions,
-      actionBank.tier1.wellbeing
-    );
-  }
-
-
-  if (profile.ADJUSTMENTS > 0) {
-    addActionGroup(
-      tier1Actions,
-      actionBank.tier1.adjustments
-    );
-  }
-
-
-  if (profile.FAMILY > 0) {
-    addActionGroup(
-      tier1Actions,
-      actionBank.tier1.family
-    );
-  }
-
-
-  // ===================================================
-  // TIER 2
-  // ===================================================
-
-  if (tiers.tier2) {
-    document
-      .getElementById("tier2Section")
-      .classList.remove("hidden");
-
-
-    if (
-      profile.SAFETY > 0 ||
-      profile.IMPACT > 0
-    ) {
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.safety
-      );
-    }
-
-
-    if (profile.PERSISTENCE > 0) {
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.persistence
-      );
-    }
-
-
-    if (profile.BEHAVIOUR_NEED > 0) {
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.behaviour
-      );
-
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.teaching
-      );
-    }
-
-
-    if (
-      profile.ENVIRONMENT > 0 ||
-      answers.context === "multiple" ||
-      answers.context === "mixed"
-    ) {
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.environment
-      );
-    }
-
-
-    if (
-      answers.context === "online" ||
-      answers.context === "mixed"
-    ) {
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.online
-      );
-    }
-
-
-    if (profile.PEER > 0) {
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.peers
-      );
-    }
-
-
-    if (profile.WELLBEING_CONNECTION > 0) {
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.belonging
-      );
-
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.wellbeing
-      );
-    }
-
-
-    if (profile.ADJUSTMENTS > 0) {
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.adjustments
-      );
-    }
-
-
-    if (profile.FAMILY > 0) {
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.family
-      );
-    }
-
-
-    if (profile.COORDINATION > 0) {
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.coordination
-      );
-    }
-
-
-    if (profile.RESPONSE_HISTORY > 0) {
-      addActionGroup(
-        tier2Actions,
-        actionBank.tier2.responseHistory
-      );
-    }
-  }
-
-
-  // ===================================================
-  // TIER 3
-  // ===================================================
-
-  if (tiers.tier3) {
-    document
-      .getElementById("tier3Section")
-      .classList.remove("hidden");
-
-
-    addActionGroup(
-      tier3Actions,
-      actionBank.tier3.core
-    );
-
-
-    if (
-      profile.SAFETY === 2 ||
-      profile.IMPACT === 2
-    ) {
-      addActionGroup(
-        tier3Actions,
-        actionBank.tier3.safety
-      );
-    }
-
-
-    if (profile.BEHAVIOUR_NEED === 2) {
-      addActionGroup(
-        tier3Actions,
-        actionBank.tier3.behaviour
-      );
-
-      addActionGroup(
-        tier3Actions,
-        actionBank.tier3.teaching
-      );
-    }
-
-
-    if (profile.ENVIRONMENT === 2) {
-      addActionGroup(
-        tier3Actions,
-        actionBank.tier3.environment
-      );
-    }
-
-
-    if (profile.PEER === 2) {
-      addActionGroup(
-        tier3Actions,
-        actionBank.tier3.peers
-      );
-    }
-
-
-    if (profile.WELLBEING_CONNECTION === 2) {
-      addActionGroup(
-        tier3Actions,
-        actionBank.tier3.belonging
-      );
-
-      addActionGroup(
-        tier3Actions,
-        actionBank.tier3.wellbeing
-      );
-    }
-
-
-    if (profile.ADJUSTMENTS === 2) {
-      addActionGroup(
-        tier3Actions,
-        actionBank.tier3.adjustments
-      );
-    }
-
-
-    if (profile.FAMILY === 2) {
-      addActionGroup(
-        tier3Actions,
-        actionBank.tier3.family
-      );
-    }
-
-
-    if (
-      profile.COORDINATION === 2 ||
-      profile.RESPONSE_HISTORY === 2
-    ) {
-      addActionGroup(
-        tier3Actions,
-        actionBank.tier3.coordination
-      );
-    }
-  }
-
-
-  // ===================================================
-  // REVIEW
-  // ===================================================
-
-  addActionGroup(
-    reviewActions,
-    actionBank.review
+  toggleSectionByRows(
+    "tier3Section",
+    tier3Actions
   );
 
 
   if (
-    answers.monitoring === "partial" ||
-    answers.monitoring === "no"
+    reviewActions &&
+    reviewActions.children.length > 0 &&
+    monitoringActionsWrap
   ) {
-    addAction(
-      reviewActions,
-      "Strengthen monitoring arrangements and identify who will collect progress information",
-      "Leadership, systems, documentation and review"
+
+    monitoringActionsWrap.classList.remove(
+      "hidden"
     );
+
+  }
+
+
+  // When previous response is effective and monitoring
+  // is already clear, no unnecessary review action is
+  // displayed. The universal review date/outcome fields
+  // remain available.
+
+  if (
+    answers.previousResponse ===
+      "effective" &&
+    answers.monitoring === "yes"
+  ) {
+
+    if (monitoringActionsWrap) {
+
+      monitoringActionsWrap.classList.add(
+        "hidden"
+      );
+
+    }
+
+  }
+
+}
+
+
+function toggleSectionByRows(
+  sectionId,
+  tbody
+) {
+
+  const section =
+    document.getElementById(
+      sectionId
+    );
+
+
+  if (
+    !section ||
+    !tbody
+  ) {
+    return;
   }
 
 
   if (
-    answers.previousResponse === "partial" ||
-    answers.previousResponse === "notWorking"
+    tbody.children.length > 0
   ) {
-    addAction(
-      reviewActions,
-      "Set escalation criteria if current supports are ineffective",
-      "Leadership, systems, documentation and review"
+
+    section.classList.remove(
+      "hidden"
     );
+
+  } else {
+
+    section.classList.add(
+      "hidden"
+    );
+
   }
+
+}
+
+
+// =====================================================
+// ADDITIONAL SCHOOL-IDENTIFIED ACTIONS
+// =====================================================
+
+function addCustomActionRow() {
+
+  if (!customActions) {
+    return;
+  }
+
+
+  const row =
+    document.createElement("tr");
+
+  row.className =
+    "custom-action-row";
+
+
+  // ACTION
+
+  const actionCell =
+    document.createElement("td");
+
+
+  const actionInput =
+    document.createElement(
+      "textarea"
+    );
+
+  actionInput.className =
+    "custom-action-input";
+
+  actionInput.placeholder =
+    "Enter school-identified action";
+
+  actionInput.setAttribute(
+    "aria-label",
+    "Additional school-identified action"
+  );
+
+
+  actionCell.appendChild(
+    actionInput
+  );
+
+
+  // RESPONSIBLE
+
+  const responsibleCell =
+    document.createElement("td");
+
+
+  const responsibleInput =
+    document.createElement("input");
+
+  responsibleInput.type =
+    "text";
+
+  responsibleInput.className =
+    "plan-input";
+
+  responsibleInput.placeholder =
+    "Name / role";
+
+
+  responsibleCell.appendChild(
+    responsibleInput
+  );
+
+
+  // DUE DATE
+
+  const dateCell =
+    document.createElement("td");
+
+
+  const dateInput =
+    document.createElement("input");
+
+  dateInput.type =
+    "date";
+
+  dateInput.className =
+    "plan-input date-input";
+
+
+  dateCell.appendChild(
+    dateInput
+  );
+
+
+  // REMOVE
+
+  const removeCell =
+    document.createElement("td");
+
+  removeCell.className =
+    "no-print";
+
+
+  const removeButton =
+    document.createElement("button");
+
+  removeButton.type =
+    "button";
+
+  removeButton.className =
+    "remove-action-button";
+
+  removeButton.textContent =
+    "Remove";
+
+
+  removeButton.addEventListener(
+    "click",
+    function () {
+
+      row.remove();
+
+    }
+  );
+
+
+  removeCell.appendChild(
+    removeButton
+  );
+
+
+  row.appendChild(
+    actionCell
+  );
+
+  row.appendChild(
+    responsibleCell
+  );
+
+  row.appendChild(
+    dateCell
+  );
+
+  row.appendChild(
+    removeCell
+  );
+
+
+  customActions.appendChild(
+    row
+  );
+
+}
+
+
+if (addCustomActionButton) {
+
+  addCustomActionButton.addEventListener(
+    "click",
+    addCustomActionRow
+  );
+
 }
 
 
@@ -1677,19 +2817,23 @@ function buildActionPlan(answers, profile, tiers) {
 // =====================================================
 
 function updateSelectedCount() {
+
   if (!selectedCount) {
     return;
   }
+
 
   const count =
     document.querySelectorAll(
       ".action-checkbox:checked"
     ).length;
 
+
   selectedCount.textContent =
     count === 1
-      ? "1 action selected"
-      : `${count} actions selected`;
+      ? "1 suggested action selected"
+      : `${count} suggested actions selected`;
+
 }
 
 
@@ -1698,18 +2842,40 @@ function updateSelectedCount() {
 // =====================================================
 
 if (editResponsesButton) {
+
   editResponsesButton.addEventListener(
     "click",
     function () {
-      actionPlan.classList.add("hidden");
-      questionnaire.classList.remove("hidden");
 
-      // Return to the final section so the leader
-      // can work backwards through their responses.
-      currentSection = totalSections;
-      showSection(currentSection);
+      if (actionPlan) {
+
+        actionPlan.classList.add(
+          "hidden"
+        );
+
+      }
+
+
+      if (questionnaire) {
+
+        questionnaire.classList.remove(
+          "hidden"
+        );
+
+      }
+
+
+      currentSection =
+        totalSections;
+
+
+      showSection(
+        currentSection
+      );
+
     }
   );
+
 }
 
 
@@ -1718,69 +2884,284 @@ if (editResponsesButton) {
 // =====================================================
 
 function prepareSelectedActionsForPrint() {
-  const rows =
-    document.querySelectorAll(
+
+  // Hide unselected suggested actions.
+
+  document
+    .querySelectorAll(
       ".action-table tbody tr"
+    )
+    .forEach(
+      function (row) {
+
+        const checkbox =
+          row.querySelector(
+            ".action-checkbox"
+          );
+
+
+        if (
+          checkbox &&
+          !checkbox.checked
+        ) {
+
+          row.classList.add(
+            "hide-for-print"
+          );
+
+        }
+
+      }
     );
 
-  rows.forEach(function (row) {
-    const checkbox =
-      row.querySelector(".action-checkbox");
 
-    if (checkbox && !checkbox.checked) {
-      row.classList.add("hide-for-print");
-    }
-  });
+  // Hide tier sections with no selected actions.
+
+  [
+    "tier1Section",
+    "tier2Section",
+    "tier3Section"
+  ].forEach(
+    function (id) {
+
+      const section =
+        document.getElementById(id);
 
 
-  const planSections =
-    document.querySelectorAll(".plan-section");
-
-  planSections.forEach(function (section) {
-    const selectedRows =
-      Array.from(
-        section.querySelectorAll(
-          ".action-table tbody tr"
+      if (
+        !section ||
+        section.classList.contains(
+          "hidden"
         )
-      ).filter(function (row) {
-        const checkbox =
-          row.querySelector(".action-checkbox");
+      ) {
+        return;
+      }
 
-        return checkbox && checkbox.checked;
-      });
 
-    if (selectedRows.length === 0) {
-      section.classList.add(
+      const selectedRows =
+        Array.from(
+          section.querySelectorAll(
+            "tbody tr"
+          )
+        ).filter(
+          function (row) {
+
+            const checkbox =
+              row.querySelector(
+                ".action-checkbox"
+              );
+
+
+            return (
+              checkbox &&
+              checkbox.checked
+            );
+
+          }
+        );
+
+
+      if (
+        selectedRows.length === 0
+      ) {
+
+        section.classList.add(
+          "hide-section-for-print"
+        );
+
+      }
+
+    }
+  );
+
+
+  // Review action table is optional.
+  // Review date/outcome fields always remain.
+
+  if (
+    monitoringActionsWrap &&
+    !monitoringActionsWrap.classList.contains(
+      "hidden"
+    )
+  ) {
+
+    const selectedReviewRows =
+      Array.from(
+        document.querySelectorAll(
+          "#reviewActions tr"
+        )
+      ).filter(
+        function (row) {
+
+          const checkbox =
+            row.querySelector(
+              ".action-checkbox"
+            );
+
+
+          return (
+            checkbox &&
+            checkbox.checked
+          );
+
+        }
+      );
+
+
+    if (
+      selectedReviewRows.length === 0
+    ) {
+
+      monitoringActionsWrap.classList.add(
+        "hide-for-print"
+      );
+
+    }
+
+  }
+
+
+  // Hide blank custom-action rows.
+
+  document
+    .querySelectorAll(
+      ".custom-action-row"
+    )
+    .forEach(
+      function (row) {
+
+        const textarea =
+          row.querySelector(
+            "textarea"
+          );
+
+
+        if (
+          !textarea ||
+          !textarea.value.trim()
+        ) {
+
+          row.classList.add(
+            "hide-for-print"
+          );
+
+        }
+
+      }
+    );
+
+
+  // Hide custom-action section entirely if no
+  // school-created actions have been entered.
+
+  const customSection =
+    document.getElementById(
+      "customActionsSection"
+    );
+
+
+  if (customSection) {
+
+    const completedCustomActions =
+      Array.from(
+        document.querySelectorAll(
+          ".custom-action-row textarea"
+        )
+      ).filter(
+        function (textarea) {
+
+          return (
+            textarea.value.trim()
+              .length > 0
+          );
+
+        }
+      );
+
+
+    if (
+      completedCustomActions.length === 0
+    ) {
+
+      customSection.classList.add(
         "hide-section-for-print"
       );
+
     }
-  });
+
+  }
+
 }
 
 
-function restoreActionsAfterPrint() {
+// =====================================================
+// RESTORE AFTER PRINT
+// =====================================================
+
+function restoreAfterPrint() {
+
   document
-    .querySelectorAll(".hide-for-print")
-    .forEach(function (row) {
-      row.classList.remove("hide-for-print");
-    });
+    .querySelectorAll(
+      ".hide-for-print"
+    )
+    .forEach(
+      function (element) {
+
+        element.classList.remove(
+          "hide-for-print"
+        );
+
+      }
+    );
+
 
   document
     .querySelectorAll(
       ".hide-section-for-print"
     )
-    .forEach(function (section) {
-      section.classList.remove(
-        "hide-section-for-print"
-      );
-    });
+    .forEach(
+      function (element) {
+
+        element.classList.remove(
+          "hide-section-for-print"
+        );
+
+      }
+    );
+
 }
 
 
-function getSelectedActionCount() {
+// =====================================================
+// PRINT COUNTS
+// =====================================================
+
+function getSelectedSuggestedActionCount() {
+
   return document.querySelectorAll(
     ".action-checkbox:checked"
   ).length;
+
+}
+
+
+function getCompletedCustomActionCount() {
+
+  return Array.from(
+    document.querySelectorAll(
+      ".custom-action-row textarea"
+    )
+  ).filter(
+    function (textarea) {
+
+      return (
+        textarea.value.trim()
+          .length > 0
+      );
+
+    }
+  ).length;
+
 }
 
 
@@ -1789,37 +3170,56 @@ function getSelectedActionCount() {
 // =====================================================
 
 if (printButton) {
+
   printButton.addEventListener(
     "click",
     function () {
-      const count =
-        getSelectedActionCount();
 
-      if (count === 0) {
+      const selectedSuggested =
+        getSelectedSuggestedActionCount();
+
+
+      const customCount =
+        getCompletedCustomActionCount();
+
+
+      if (
+        selectedSuggested === 0 &&
+        customCount === 0
+      ) {
+
         alert(
-          "Please select at least one action before printing or saving the action plan."
+          "Please select at least one suggested action or add a school-identified action before printing the plan."
         );
+
         return;
+
       }
+
 
       prepareSelectedActionsForPrint();
 
+
       window.print();
 
+
       // Backup restoration for browsers where
-      // afterprint is unreliable.
+      // afterprint does not fire reliably.
+
       setTimeout(
-        restoreActionsAfterPrint,
+        restoreAfterPrint,
         1000
       );
+
     }
   );
+
 }
 
 
 window.addEventListener(
   "afterprint",
-  restoreActionsAfterPrint
+  restoreAfterPrint
 );
 
 
@@ -1828,19 +3228,26 @@ window.addEventListener(
 // =====================================================
 
 if (restartButton) {
+
   restartButton.addEventListener(
     "click",
     function () {
+
       const confirmed =
         window.confirm(
-          "Start a new plan? Your current responses and selected actions will be cleared."
+          "Start a new plan? Your current responses, selected actions and plan details will be cleared."
         );
 
+
       if (confirmed) {
+
         window.location.reload();
+
       }
+
     }
   );
+
 }
 
 
