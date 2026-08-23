@@ -22,6 +22,16 @@
 
     <section id="landingPage" class="landing-card">
 
+      <div class="prototype-banner">
+        <strong>Prototype — consultation and feedback only</strong>
+        <p>
+          This prototype is currently being tested and refined. It is being
+          shared for consultation and feedback and should not be distributed
+          or represented as a final or endorsed resource.
+        </p>
+      </div>
+
+
       <div class="hero">
 
         <p class="eyebrow">
@@ -36,9 +46,13 @@
           The Bullying Response Planning Tool is an evidence-informed
           decision-support resource designed to assist school leaders and
           student support teams to systematically consider the circumstances
-          surrounding bullying behaviour, identify relevant protective,
-          preventative, teaching, response and recovery strategies, and
-          develop a tailored action plan.
+          surrounding bullying behaviour.
+        </p>
+
+        <p class="hero-intro">
+          It supports the identification of relevant protective, preventative,
+          teaching, response and recovery strategies and the development of a
+          tailored action plan.
         </p>
 
         <p class="hero-intro">
@@ -67,8 +81,7 @@
       <div class="continuum-link">
 
         <p>
-          You can also view the full evidence-informed response continuum
-          that underpins this planning tool.
+          View the response continuum that underpins this planning tool.
         </p>
 
         <a
@@ -94,7 +107,7 @@
         </button>
 
         <p class="time-note">
-          Approximately 5 minutes to complete
+          Approximately 5–7 minutes to complete
         </p>
 
       </div>
@@ -109,7 +122,6 @@
 
     <section id="questionnaire" class="questionnaire-card hidden">
 
-
       <div class="questionnaire-header">
 
         <p class="eyebrow">
@@ -121,9 +133,9 @@
         </h2>
 
         <p>
-          Select the response that best reflects what is currently known.
-          The questions are intended to support professional judgement and
-          identify potentially relevant response actions.
+          Select the responses that best reflect what is currently known.
+          The questions are designed to identify relevant response needs and
+          support proportionate planning.
         </p>
 
 
@@ -137,6 +149,7 @@
 
       <!-- ===============================================
            SECTION 1
+           Pattern, power and context
            =============================================== -->
 
       <section
@@ -156,26 +169,26 @@
         <div class="question-block">
 
           <label for="pattern">
-            What best describes the pattern of behaviour?
+            1. What best describes the pattern of behaviour?
           </label>
 
           <select id="pattern">
             <option value="">Select an option</option>
 
             <option value="isolated">
-              Isolated or limited concern
+              Isolated or limited — no established pattern of repetition
             </option>
 
             <option value="emerging">
-              Emerging pattern or likely to be repeated
+              Emerging — some indication of repetition or an emerging pattern
             </option>
 
             <option value="repeated">
-              Clear repeated pattern
+              Repeated — a clear pattern of repeated behaviour
             </option>
 
-            <option value="persistent">
-              Persistent despite previous responses
+            <option value="sustained">
+              Frequent or sustained — behaviour is occurring frequently or has continued over time
             </option>
           </select>
 
@@ -185,22 +198,22 @@
         <div class="question-block">
 
           <label for="power">
-            Is there evidence of an imbalance or misuse of power?
+            2. Is there evidence of an imbalance or misuse of power?
           </label>
 
           <select id="power">
             <option value="">Select an option</option>
 
             <option value="unclear">
-              Unclear or still being established
+              Unclear / still being established
             </option>
 
             <option value="some">
-              Some indicators of power imbalance
+              Some indicators of an imbalance or misuse of power
             </option>
 
             <option value="clear">
-              Clear misuse or imbalance of power
+              Clear imbalance or misuse of power
             </option>
           </select>
 
@@ -209,29 +222,65 @@
 
         <div class="question-block">
 
-          <label for="context">
-            Where is the behaviour primarily occurring?
-          </label>
+          <fieldset>
+            <legend>
+              3. Where is the behaviour occurring?
+              <span class="question-helper">Select all that apply.</span>
+            </legend>
 
-          <select id="context">
-            <option value="">Select an option</option>
+            <div class="checkbox-list">
 
-            <option value="school">
-              Primarily in one school setting or context
-            </option>
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="contexts"
+                  value="classroom"
+                >
+                <span>Classroom / learning environments</span>
+              </label>
 
-            <option value="multiple">
-              Across multiple school settings or times
-            </option>
 
-            <option value="online">
-              Primarily online or through digital platforms
-            </option>
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="contexts"
+                  value="playground"
+                >
+                <span>Break times / playground</span>
+              </label>
 
-            <option value="mixed">
-              Across school and online / community contexts
-            </option>
-          </select>
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="contexts"
+                  value="transitions"
+                >
+                <span>Transitions, arrival/departure or transport</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="contexts"
+                  value="online"
+                >
+                <span>Online / digital environments</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="contexts"
+                  value="other"
+                >
+                <span>Other school / community contexts</span>
+              </label>
+
+            </div>
+          </fieldset>
 
         </div>
 
@@ -241,6 +290,7 @@
 
       <!-- ===============================================
            SECTION 2
+           Safety and impact
            =============================================== -->
 
       <section
@@ -260,22 +310,22 @@
         <div class="question-block">
 
           <label for="safety">
-            Are there current safety or protective concerns?
+            4. Are there current concerns about the student's safety or risk of further harm?
           </label>
 
           <select id="safety">
             <option value="">Select an option</option>
 
             <option value="none">
-              No significant current safety concern identified
+              No current safety concern identified
             </option>
 
             <option value="some">
-              Some concern requiring additional protection or monitoring
+              Some concern — further harm, retaliation or continued exposure is possible
             </option>
 
             <option value="significant">
-              Significant or immediate safety concern
+              Significant concern — there is an immediate or substantial risk of further harm
             </option>
           </select>
 
@@ -284,25 +334,86 @@
 
         <div class="question-block">
 
-          <label for="impact">
-            What is the current impact on the student experiencing the behaviour?
-          </label>
+          <fieldset>
+            <legend>
+              5. What impact is the behaviour currently having on the student experiencing it?
+              <span class="question-helper">Select all that apply.</span>
+            </legend>
 
-          <select id="impact">
-            <option value="">Select an option</option>
+            <div class="checkbox-list">
 
-            <option value="limited">
-              Limited or emerging impact
-            </option>
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="impacts"
+                  value="none"
+                  data-exclusive="impacts"
+                >
+                <span>No significant impact currently identified</span>
+              </label>
 
-            <option value="moderate">
-              Noticeable impact on wellbeing, engagement or participation
-            </option>
 
-            <option value="significant">
-              Significant impact on safety, wellbeing, attendance or engagement
-            </option>
-          </select>
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="impacts"
+                  value="emotional"
+                >
+                <span>Emotional distress, worry or reduced sense of safety</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="impacts"
+                  value="engagement"
+                >
+                <span>Reduced participation, engagement or concentration</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="impacts"
+                  value="avoidance"
+                >
+                <span>Avoidance of particular students, activities or locations</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="impacts"
+                  value="attendance"
+                >
+                <span>Attendance concerns or school avoidance</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="impacts"
+                  value="isolation"
+                >
+                <span>Social isolation or reduced peer connection</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="impacts"
+                  value="wellbeing"
+                >
+                <span>Significant or escalating wellbeing concerns</span>
+              </label>
+
+            </div>
+          </fieldset>
 
         </div>
 
@@ -312,6 +423,7 @@
 
       <!-- ===============================================
            SECTION 3
+           Behaviour understanding and skill development
            =============================================== -->
 
       <section
@@ -324,29 +436,29 @@
         </div>
 
         <h3>
-          Behaviour understanding and skill needs
+          Behaviour understanding and skill development
         </h3>
 
 
         <div class="question-block">
 
           <label for="behaviourUnderstanding">
-            How well are the factors contributing to the behaviour understood?
+            6. How well are the factors contributing to and maintaining the bullying behaviour understood?
           </label>
 
           <select id="behaviourUnderstanding">
             <option value="">Select an option</option>
 
-            <option value="clear">
-              Contributing factors are reasonably clear
+            <option value="well">
+              Well understood — patterns, triggers and contributing factors are reasonably clear
             </option>
 
             <option value="partial">
-              Some understanding, but further assessment would help
+              Partly understood — some factors are known but further information is needed
             </option>
 
             <option value="unclear">
-              Behaviour remains complex or poorly understood
+              Not yet well understood — the behaviour is complex or factors maintaining it remain unclear
             </option>
           </select>
 
@@ -355,25 +467,106 @@
 
         <div class="question-block">
 
-          <label for="skills">
-            Are there identified skill or replacement-behaviour needs?
-          </label>
+          <fieldset>
+            <legend>
+              7. What skills or replacement behaviours may need to be explicitly taught or strengthened?
+              <span class="question-helper">Select all that apply.</span>
+            </legend>
 
-          <select id="skills">
-            <option value="">Select an option</option>
+            <div class="checkbox-list">
 
-            <option value="limited">
-              Limited additional teaching need identified
-            </option>
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="skills"
+                  value="none"
+                  data-exclusive="skills"
+                >
+                <span>No specific skill need currently identified</span>
+              </label>
 
-            <option value="some">
-              Some targeted teaching or coaching is required
-            </option>
 
-            <option value="significant">
-              Significant or individualised skill development is required
-            </option>
-          </select>
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="skills"
+                  value="respectful"
+                >
+                <span>Respectful communication and interaction</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="skills"
+                  value="conflict"
+                >
+                <span>Managing conflict or disagreement</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="skills"
+                  value="regulation"
+                >
+                <span>Emotional regulation and impulse control</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="skills"
+                  value="perspective"
+                >
+                <span>Perspective-taking, empathy and understanding impact</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="skills"
+                  value="connection"
+                >
+                <span>Seeking attention, status or peer connection appropriately</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="skills"
+                  value="problemSolving"
+                >
+                <span>Problem-solving and responding to social situations</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="skills"
+                  value="digital"
+                >
+                <span>Appropriate online / digital behaviour</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="skills"
+                  value="other"
+                >
+                <span>Other replacement behaviour identified by the school</span>
+              </label>
+
+            </div>
+          </fieldset>
 
         </div>
 
@@ -383,6 +576,7 @@
 
       <!-- ===============================================
            SECTION 4
+           Environment and individual needs
            =============================================== -->
 
       <section
@@ -395,29 +589,29 @@
         </div>
 
         <h3>
-          Environment and adjustments
+          Environment and individual needs
         </h3>
 
 
         <div class="question-block">
 
           <label for="environment">
-            Are environmental factors contributing to opportunities for the behaviour?
+            8. Are there features of the environment, routines or supervision that may be increasing opportunities for the bullying behaviour to occur or continue?
           </label>
 
           <select id="environment">
             <option value="">Select an option</option>
 
-            <option value="limited">
-              Few specific environmental concerns identified
+            <option value="none">
+              No specific environmental factors identified
             </option>
 
             <option value="some">
-              Some locations, routines or transitions require adjustment
+              Some factors identified — particular routines, supervision arrangements or situations may be contributing
             </option>
 
-            <option value="multiple">
-              Multiple settings or environmental factors are contributing
+            <option value="significant">
+              Significant factors identified — multiple or recurring environmental conditions are contributing
             </option>
           </select>
 
@@ -427,22 +621,26 @@
         <div class="question-block">
 
           <label for="adjustments">
-            Do individual needs or adjustments require consideration?
+            9. Are there individual needs or reasonable adjustments that should be considered when planning the response?
           </label>
 
           <select id="adjustments">
             <option value="">Select an option</option>
 
-            <option value="adequate">
-              Current adjustments appear adequate
+            <option value="none">
+              No additional adjustment needs currently identified
+            </option>
+
+            <option value="inform">
+              Yes — existing adjustments or individual needs should inform the response
             </option>
 
             <option value="review">
-              Adjustments should be reviewed or strengthened
+              Yes — adjustments require review or additional support may be needed
             </option>
 
-            <option value="significant">
-              Significant or specialist adjustment needs are present
+            <option value="unclear">
+              Unclear — further consultation or assessment is required
             </option>
           </select>
 
@@ -454,6 +652,7 @@
 
       <!-- ===============================================
            SECTION 5
+           Peer dynamics and protective connection
            =============================================== -->
 
       <section
@@ -466,54 +665,105 @@
         </div>
 
         <h3>
-          Peers, connection and belonging
+          Peer dynamics and protective connection
         </h3>
 
 
         <div class="question-block">
 
-          <label for="peers">
-            To what extent are peer or group dynamics contributing?
-          </label>
+          <fieldset>
+            <legend>
+              10. Are peer or group dynamics contributing to the bullying behaviour?
+              <span class="question-helper">Select all that apply.</span>
+            </legend>
 
-          <select id="peers">
-            <option value="">Select an option</option>
+            <div class="checkbox-list">
 
-            <option value="limited">
-              Limited peer-group influence identified
-            </option>
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="peerDynamics"
+                  value="none"
+                  data-exclusive="peerDynamics"
+                >
+                <span>No significant peer or group contribution identified</span>
+              </label>
 
-            <option value="some">
-              Peer attention, reinforcement or group dynamics are contributing
-            </option>
 
-            <option value="significant">
-              Significant or entrenched peer-group dynamics are present
-            </option>
-          </select>
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="peerDynamics"
+                  value="reinforcement"
+                >
+                <span>Peers are providing attention, encouragement or reinforcement</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="peerDynamics"
+                  value="participation"
+                >
+                <span>Peers are participating in or joining the behaviour</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="peerDynamics"
+                  value="exclusion"
+                >
+                <span>Social exclusion, rumours or group pressure are contributing</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="peerDynamics"
+                  value="reporting"
+                >
+                <span>Students may be reluctant to report or intervene</span>
+              </label>
+
+
+              <label class="checkbox-option">
+                <input
+                  type="checkbox"
+                  name="peerDynamics"
+                  value="entrenched"
+                >
+                <span>Entrenched or broader group dynamics are present</span>
+              </label>
+
+            </div>
+          </fieldset>
 
         </div>
 
 
         <div class="question-block">
 
-          <label for="belonging">
-            Are there concerns about connection, belonging or protective relationships?
+          <label for="trustedAdult">
+            11. Does the student experiencing bullying have a trusted adult at school they can readily approach for support?
           </label>
 
-          <select id="belonging">
+          <select id="trustedAdult">
             <option value="">Select an option</option>
 
-            <option value="strong">
-              Connection and protective relationships appear strong
+            <option value="yes">
+              Yes
             </option>
 
-            <option value="some">
-              Some additional connection or belonging support is needed
+            <option value="partial">
+              Partly / not consistently
             </option>
 
-            <option value="significant">
-              Significant disconnection, isolation or disengagement is evident
+            <option value="no">
+              No / not currently identified
             </option>
           </select>
 
@@ -525,6 +775,7 @@
 
       <!-- ===============================================
            SECTION 6
+           Family partnership and coordinated support
            =============================================== -->
 
       <section
@@ -537,29 +788,29 @@
         </div>
 
         <h3>
-          Family and coordinated support
+          Family partnership and coordinated support
         </h3>
 
 
         <div class="question-block">
 
           <label for="family">
-            What level of family partnership or communication is required?
+            12. What level of family communication and partnership is required to support the response?
           </label>
 
           <select id="family">
             <option value="">Select an option</option>
 
-            <option value="established">
-              Communication and partnership are established
+            <option value="routine">
+              Routine communication — existing communication arrangements are sufficient
             </option>
 
-            <option value="partial">
-              Additional planned communication or shared planning is needed
+            <option value="planned">
+              Planned communication — regular updates and shared planning would support the response
             </option>
 
-            <option value="complex">
-              Complex or intensive family engagement is required
+            <option value="coordinated">
+              Coordinated partnership — ongoing joint planning between the school and family is required
             </option>
           </select>
 
@@ -568,23 +819,23 @@
 
         <div class="question-block">
 
-          <label for="supports">
-            How much coordination is required across staff or support services?
+          <label for="coordination">
+            13. What level of coordination is required to implement the response consistently?
           </label>
 
-          <select id="supports">
+          <select id="coordination">
             <option value="">Select an option</option>
 
             <option value="routine">
-              Routine school-based coordination is sufficient
+              Routine coordination — relevant staff can implement the response through existing processes
             </option>
 
-            <option value="some">
-              Additional coordination across relevant staff is required
+            <option value="targeted">
+              Targeted coordination — several staff or settings need a shared plan and coordinated response
             </option>
 
-            <option value="significant">
-              Significant multidisciplinary or specialist coordination is required
+            <option value="multidisciplinary">
+              Multidisciplinary coordination — school support staff, specialists and/or external services need to contribute to planning and review
             </option>
           </select>
 
@@ -596,6 +847,7 @@
 
       <!-- ===============================================
            SECTION 7
+           Previous response and monitoring
            =============================================== -->
 
       <section
@@ -615,22 +867,30 @@
         <div class="question-block">
 
           <label for="previousResponse">
-            How effective have previous responses been?
+            14. What best describes the response to date?
           </label>
 
           <select id="previousResponse">
             <option value="">Select an option</option>
 
+            <option value="none">
+              No targeted response implemented yet — this is an initial or early response
+            </option>
+
             <option value="effective">
-              No significant previous response concerns
+              Response implemented and appears effective — behaviour and/or impact is reducing
             </option>
 
             <option value="partial">
-              Responses have been partly effective or inconsistently implemented
+              Response partly effective — some improvement is evident but concerns remain
             </option>
 
-            <option value="notWorking">
-              Concerns continue despite previous intervention
+            <option value="ineffective">
+              Response ineffective — concerns continue despite the response being implemented
+            </option>
+
+            <option value="escalated">
+              Concerns have escalated — frequency, severity or impact has increased despite intervention
             </option>
           </select>
 
@@ -640,22 +900,22 @@
         <div class="question-block">
 
           <label for="monitoring">
-            Are clear monitoring and review arrangements currently in place?
+            15. Are there clear arrangements to monitor whether the response is being implemented and having the intended impact?
           </label>
 
           <select id="monitoring">
             <option value="">Select an option</option>
 
             <option value="yes">
-              Yes — monitoring and review arrangements are clear
+              Yes — monitoring measures, responsibilities and review arrangements are clear
             </option>
 
             <option value="partial">
-              Partly — arrangements need strengthening
+              Partly — some arrangements exist but need strengthening
             </option>
 
             <option value="no">
-              No — clear monitoring arrangements are not yet established
+              No — clear monitoring and review arrangements are not yet established
             </option>
           </select>
 
@@ -694,11 +954,10 @@
 
 
     <!-- =================================================
-         GENERATED ACTION PLAN
+         ACTION PLAN
          ================================================= -->
 
     <section id="actionPlan" class="action-plan-card hidden">
-
 
       <div class="action-plan-header">
 
@@ -711,9 +970,9 @@
         </h2>
 
         <p>
-          The actions below have been identified as potentially relevant
-          based on the information entered. They are intended to support,
-          not replace, professional judgement.
+          The suggested response actions below have been identified from the
+          information entered. They are intended to support, not replace,
+          professional judgement.
         </p>
 
       </div>
@@ -721,7 +980,7 @@
 
 
       <!-- ===============================================
-           INSTRUCTIONS
+           ACTION PLAN INSTRUCTIONS
            =============================================== -->
 
       <div class="plan-instructions">
@@ -731,11 +990,11 @@
         </strong>
 
         <p>
-          Review the recommended actions below and tick the items your school
-          intends to implement. Add the responsible person and due date for
-          each selected action. When you select
-          <strong>Print / Save as PDF</strong>, only the actions you have
-          selected will be included in the final action plan.
+          Review the suggested actions below and select those that will form
+          part of the school's response. Add the responsible person and due
+          date for each selected action. When you choose
+          <strong>Print / Save as PDF</strong>, only selected actions and any
+          school-identified actions you add will appear in the final plan.
         </p>
 
       </div>
@@ -743,10 +1002,10 @@
 
 
       <!-- ===============================================
-           CASE DETAILS
+           PLAN DETAILS
            =============================================== -->
 
-      <div class="case-details no-print-empty">
+      <div class="case-details">
 
         <h3>
           Plan details
@@ -815,76 +1074,12 @@
 
 
       <!-- ===============================================
-           IMMEDIATE SAFETY
-           =============================================== -->
-
-      <section
-        id="safetySection"
-        class="plan-section safety-plan-section hidden"
-      >
-
-        <div class="tier-heading">
-
-          <div>
-            <span class="tier-label safety-label">
-              Priority
-            </span>
-
-            <h3>
-              Immediate safety and protective actions
-            </h3>
-          </div>
-
-        </div>
-
-
-        <p class="tier-description">
-          Select any immediate protective actions required to restore safety
-          and reduce the risk of further harm.
-        </p>
-
-
-        <div class="table-wrap">
-
-          <table class="action-table">
-
-            <thead>
-              <tr>
-                <th class="select-column">
-                  Select
-                </th>
-
-                <th>
-                  Action
-                </th>
-
-                <th class="responsible-column">
-                  Responsible
-                </th>
-
-                <th class="date-column">
-                  Due date
-                </th>
-              </tr>
-            </thead>
-
-            <tbody id="safetyActions"></tbody>
-
-          </table>
-
-        </div>
-
-      </section>
-
-
-
-      <!-- ===============================================
            TIER 1
            =============================================== -->
 
       <section
         id="tier1Section"
-        class="plan-section"
+        class="plan-section hidden"
       >
 
         <div class="tier-heading">
@@ -895,7 +1090,7 @@
             </span>
 
             <h3>
-              Recommended foundation actions
+              Foundation response actions
             </h3>
           </div>
 
@@ -903,8 +1098,7 @@
 
 
         <p class="tier-description">
-          Select the actions that will form part of the school’s foundation
-          response.
+          Suggested foundational actions relevant to the circumstances identified.
         </p>
 
 
@@ -914,21 +1108,10 @@
 
             <thead>
               <tr>
-                <th class="select-column">
-                  Select
-                </th>
-
-                <th>
-                  Action
-                </th>
-
-                <th class="responsible-column">
-                  Responsible
-                </th>
-
-                <th class="date-column">
-                  Due date
-                </th>
+                <th class="select-column">Select</th>
+                <th>Suggested action</th>
+                <th class="responsible-column">Responsible</th>
+                <th class="date-column">Due date</th>
               </tr>
             </thead>
 
@@ -959,7 +1142,7 @@
             </span>
 
             <h3>
-              Recommended targeted actions
+              Targeted response actions
             </h3>
           </div>
 
@@ -967,8 +1150,7 @@
 
 
         <p class="tier-description">
-          Select the targeted actions that are appropriate to the identified
-          needs.
+          Suggested targeted actions relevant to the identified needs.
         </p>
 
 
@@ -978,21 +1160,10 @@
 
             <thead>
               <tr>
-                <th class="select-column">
-                  Select
-                </th>
-
-                <th>
-                  Action
-                </th>
-
-                <th class="responsible-column">
-                  Responsible
-                </th>
-
-                <th class="date-column">
-                  Due date
-                </th>
+                <th class="select-column">Select</th>
+                <th>Suggested action</th>
+                <th class="responsible-column">Responsible</th>
+                <th class="date-column">Due date</th>
               </tr>
             </thead>
 
@@ -1023,7 +1194,7 @@
             </span>
 
             <h3>
-              Recommended intensive actions
+              Intensive and coordinated response actions
             </h3>
           </div>
 
@@ -1031,8 +1202,8 @@
 
 
         <p class="tier-description">
-          Select any intensive, individualised or coordinated actions required
-          for the response.
+          Suggested intensive or individualised actions where additional
+          response intensity has been identified.
         </p>
 
 
@@ -1042,21 +1213,10 @@
 
             <thead>
               <tr>
-                <th class="select-column">
-                  Select
-                </th>
-
-                <th>
-                  Action
-                </th>
-
-                <th class="responsible-column">
-                  Responsible
-                </th>
-
-                <th class="date-column">
-                  Due date
-                </th>
+                <th class="select-column">Select</th>
+                <th>Suggested action</th>
+                <th class="responsible-column">Responsible</th>
+                <th class="date-column">Due date</th>
               </tr>
             </thead>
 
@@ -1065,6 +1225,68 @@
           </table>
 
         </div>
+
+      </section>
+
+
+
+      <!-- ===============================================
+           ADDITIONAL SCHOOL-IDENTIFIED ACTIONS
+           =============================================== -->
+
+      <section
+        id="customActionsSection"
+        class="plan-section custom-actions-section"
+      >
+
+        <div class="tier-heading">
+
+          <div>
+            <span class="tier-label custom-label">
+              School
+            </span>
+
+            <h3>
+              Additional school-identified actions
+            </h3>
+          </div>
+
+        </div>
+
+
+        <p class="tier-description">
+          Add any other actions identified through professional judgement,
+          consultation or school processes.
+        </p>
+
+
+        <div class="table-wrap">
+
+          <table class="action-table custom-action-table">
+
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th class="responsible-column">Responsible</th>
+                <th class="date-column">Due date</th>
+                <th class="remove-column no-print">Remove</th>
+              </tr>
+            </thead>
+
+            <tbody id="customActions"></tbody>
+
+          </table>
+
+        </div>
+
+
+        <button
+          id="addCustomActionButton"
+          type="button"
+          class="secondary-control add-action-button no-print"
+        >
+          + Add Action
+        </button>
 
       </section>
 
@@ -1094,39 +1316,86 @@
         </div>
 
 
-        <p class="tier-description">
-          Select the review actions that will be used to monitor implementation
-          and determine whether the response is having the intended impact.
-        </p>
-
-
-        <div class="table-wrap">
+        <div id="monitoringActionsWrap" class="table-wrap hidden">
 
           <table class="action-table">
 
             <thead>
               <tr>
-                <th class="select-column">
-                  Select
-                </th>
-
-                <th>
-                  Action
-                </th>
-
-                <th class="responsible-column">
-                  Responsible
-                </th>
-
-                <th class="date-column">
-                  Due date
-                </th>
+                <th class="select-column">Select</th>
+                <th>Suggested action</th>
+                <th class="responsible-column">Responsible</th>
+                <th class="date-column">Due date</th>
               </tr>
             </thead>
 
             <tbody id="reviewActions"></tbody>
 
           </table>
+
+        </div>
+
+
+        <div class="review-details">
+
+          <div class="review-field">
+            <label for="reviewDate">
+              Review date
+            </label>
+
+            <input
+              id="reviewDate"
+              type="date"
+              class="detail-input"
+            >
+          </div>
+
+
+          <div class="review-field">
+            <label for="reviewLead">
+              Review led by
+            </label>
+
+            <input
+              id="reviewLead"
+              type="text"
+              class="detail-input"
+              placeholder="Name / role"
+            >
+          </div>
+
+        </div>
+
+
+        <div class="review-outcome">
+
+          <p class="review-outcome-heading">
+            Review outcome
+          </p>
+
+          <div class="review-outcome-options">
+
+            <label>
+              <input type="checkbox">
+              Continue current plan
+            </label>
+
+            <label>
+              <input type="checkbox">
+              Adjust response
+            </label>
+
+            <label>
+              <input type="checkbox">
+              Increase support
+            </label>
+
+            <label>
+              <input type="checkbox">
+              Step down / close
+            </label>
+
+          </div>
 
         </div>
 
@@ -1138,10 +1407,10 @@
            PLAN CONTROLS
            =============================================== -->
 
-      <div class="plan-controls">
+      <div class="plan-controls no-print">
 
         <p id="selectedCount" class="selected-count">
-          0 actions selected
+          0 suggested actions selected
         </p>
 
 
@@ -1184,10 +1453,9 @@
            =============================================== -->
 
       <div class="print-footer">
-        Bullying Response Planning Tool | Independently developed
-        decision-support resource | Developed by David Capill
+        Bullying Response Planning Tool | Prototype for consultation and feedback |
+        Independently developed by David Capill
       </div>
-
 
     </section>
 
@@ -1207,9 +1475,9 @@
     </p>
 
     <p>
-      Independently developed decision-support resource. Not an official
-      Department of Education tool. Does not replace policy, procedures or
-      professional judgement.
+      Prototype for consultation and feedback only. Independently developed
+      decision-support resource. Not an official Department of Education tool.
+      Does not replace policy, procedures or professional judgement.
     </p>
 
     <p>
