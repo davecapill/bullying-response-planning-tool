@@ -1,6 +1,6 @@
 // =====================================================
 // BULLYING RESPONSE PLANNING TOOL
-// Version 1.1
+// Version 1.2 — Case file + visual/UX prototype
 // Complete script.js
 // =====================================================
 
@@ -27,8 +27,44 @@ const customActions =
 const monitoringActionsWrap =
   document.getElementById("monitoringActionsWrap");
 
+const openCaseButton =
+  document.getElementById("openCaseButton");
+const caseFileInput =
+  document.getElementById("caseFileInput");
+const saveCaseQuestionnaireButton =
+  document.getElementById("saveCaseQuestionnaireButton");
+const saveCasePlanButton =
+  document.getElementById("saveCasePlanButton");
+
+const CASE_FILE_FORMAT = "bullying-response-planning-case";
+const CASE_FILE_VERSION = "1.2";
+
 let currentSection = 1;
 const totalSections = sections.length;
+
+const appToast = document.getElementById("appToast");
+let toastTimer = null;
+
+function showToast(message, type = "success") {
+  if (!appToast) return;
+  appToast.textContent = message;
+  appToast.classList.toggle("is-error", type === "error");
+  appToast.classList.add("is-visible");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () {
+    appToast.classList.remove("is-visible");
+  }, 2600);
+}
+
+function updateStageNav(sectionNumber) {
+  document.querySelectorAll(".stage-item").forEach(function (item) {
+    const stage = Number(item.dataset.stage);
+    item.classList.toggle("is-current", stage === sectionNumber);
+    item.classList.toggle("is-complete", stage < sectionNumber);
+    if (stage === sectionNumber) item.setAttribute("aria-current", "step");
+    else item.removeAttribute("aria-current");
+  });
+}
 
 
 // =====================================================
@@ -261,6 +297,9 @@ function showSection(sectionNumber) {
       "active-section"
     );
   }
+
+
+  updateStageNav(sectionNumber);
 
 
   if (
@@ -2877,6 +2916,760 @@ if (editResponsesButton) {
   );
 
 }
+
+
+// =====================================================
+// VERSION 1.2 — SAVE / OPEN CASE FILES
+//
+// Case files are JSON documents stored by the user.
+// They contain the questionnaire state and current plan,
+// allowing a case to be reopened and continued later.
+// =====================================================
+
+function getCurrentView() {
+
+  if (
+    actionPlan &&
+    !actionPlan.classList.contains("hidden")
+  ) {
+    return "actionPlan";
+  }
+
+  if (
+    questionnaire &&
+    !questionnaire.classList.contains("hidden")
+  ) {
+    return "questionnaire";
+  }
+
+  return "landing";
+
+}
+
+
+function getInputValue(id) {
+
+  const element =
+    document.getElementById(id);
+
+  return element
+    ? element.value
+    : "";
+
+}
+
+
+function getSuggestedActionState() {
+
+  const result = {};
+
+  document
+    .querySelectorAll(
+      ".action-table tbody tr[data-action-id]"
+    )
+    .forEach(
+      function (row) {
+
+        const actionId =
+          row.dataset.actionId;
+
+        const checkbox =
+          row.querySelector(
+            ".action-checkbox"
+          );
+
+        const inputs =
+          row.querySelectorAll(
+            ".plan-input"
+          );
+
+        result[actionId] = {
+          selected:
+            checkbox
+              ? checkbox.checked
+              : false,
+          responsible:
+            inputs[0]
+              ? inputs[0].value
+              : "",
+          dueDate:
+            inputs[1]
+              ? inputs[1].value
+              : ""
+        };
+
+      }
+    );
+
+  return result;
+
+}
+
+
+function getCustomActionState() {
+
+  return Array.from(
+    document.querySelectorAll(
+      ".custom-action-row"
+    )
+  ).map(
+    function (row) {
+
+      const action =
+        row.querySelector(
+          "textarea"
+        );
+
+      const inputs =
+        row.querySelectorAll(
+          ".plan-input"
+        );
+
+      return {
+        action:
+          action
+            ? action.value
+            : "",
+        responsible:
+          inputs[0]
+            ? inputs[0].value
+            : "",
+        dueDate:
+          inputs[1]
+            ? inputs[1].value
+            : ""
+      };
+
+    }
+  ).filter(
+    function (item) {
+
+      return (
+        item.action.trim() ||
+        item.responsible.trim() ||
+        item.dueDate
+      );
+
+    }
+  );
+
+}
+
+
+function buildCaseFileData() {
+
+  return {
+    _format:
+      CASE_FILE_FORMAT,
+    _version:
+      CASE_FILE_VERSION,
+    savedAt:
+      new Date().toISOString(),
+    view:
+      getCurrentView(),
+    currentSection:
+      currentSection,
+    answers:
+      getAnswers(),
+    plan: {
+      schoolName:
+        getInputValue("schoolName"),
+      studentReference:
+        getInputValue("studentReference"),
+      planDate:
+        getInputValue("planDate"),
+      planLead:
+        getInputValue("planLead"),
+      suggestedActions:
+        getSuggestedActionState(),
+      customActions:
+        getCustomActionState(),
+      reviewDate:
+        getInputValue("reviewDate"),
+      reviewLead:
+        getInputValue("reviewLead"),
+      reviewOutcomes:
+        getCheckedValues(
+          "reviewOutcome"
+        )
+    }
+  };
+
+}
+
+
+function safeFilePart(value) {
+
+  return String(value || "")
+    .trim()
+    .replace(/[^a-z0-9-_]+/gi, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 60);
+
+}
+
+
+function downloadCaseFile() {
+
+  const data =
+    buildCaseFileData();
+
+  const json =
+    JSON.stringify(
+      data,
+      null,
+      2
+    );
+
+  const blob =
+    new Blob(
+      [json],
+      {
+        type:
+          "application/json"
+      }
+    );
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+  const link =
+    document.createElement("a");
+
+  const reference =
+    safeFilePart(
+      data.plan.studentReference
+    );
+
+  const date =
+    data.plan.planDate ||
+    new Date()
+      .toISOString()
+      .slice(0, 10);
+
+  link.href = url;
+  link.download =
+    `Bullying_Response_Case_${reference ? reference + "_" : ""}${date}.json`;
+
+  document.body.appendChild(
+    link
+  );
+
+  link.click();
+  link.remove();
+
+  URL.revokeObjectURL(
+    url
+  );
+
+  showToast("Case file saved to your device.");
+
+}
+
+
+function setSelectValue(
+  id,
+  value
+) {
+
+  const element =
+    document.getElementById(id);
+
+  if (
+    element &&
+    value !== undefined &&
+    value !== null
+  ) {
+    element.value = value;
+  }
+
+}
+
+
+function setCheckboxGroup(
+  name,
+  values
+) {
+
+  const selected =
+    new Set(
+      Array.isArray(values)
+        ? values
+        : []
+    );
+
+  document
+    .querySelectorAll(
+      `input[name="${name}"]`
+    )
+    .forEach(
+      function (input) {
+        input.checked =
+          selected.has(
+            input.value
+          );
+      }
+    );
+
+}
+
+
+function restoreAnswers(answers) {
+
+  if (!answers) {
+    return;
+  }
+
+  setSelectValue(
+    "pattern",
+    answers.pattern
+  );
+  setSelectValue(
+    "power",
+    answers.power
+  );
+  setCheckboxGroup(
+    "contexts",
+    answers.contexts
+  );
+  setSelectValue(
+    "safety",
+    answers.safety
+  );
+  setCheckboxGroup(
+    "impacts",
+    answers.impacts
+  );
+  setSelectValue(
+    "behaviourUnderstanding",
+    answers.behaviourUnderstanding
+  );
+  setCheckboxGroup(
+    "skills",
+    answers.skills
+  );
+  setSelectValue(
+    "environment",
+    answers.environment
+  );
+  setSelectValue(
+    "adjustments",
+    answers.adjustments
+  );
+  setCheckboxGroup(
+    "peerDynamics",
+    answers.peerDynamics
+  );
+  setSelectValue(
+    "trustedAdult",
+    answers.trustedAdult
+  );
+  setSelectValue(
+    "family",
+    answers.family
+  );
+  setSelectValue(
+    "coordination",
+    answers.coordination
+  );
+  setSelectValue(
+    "previousResponse",
+    answers.previousResponse
+  );
+  setSelectValue(
+    "monitoring",
+    answers.monitoring
+  );
+
+}
+
+
+function setElementValue(
+  id,
+  value
+) {
+
+  const element =
+    document.getElementById(id);
+
+  if (element) {
+    element.value =
+      value || "";
+  }
+
+}
+
+
+function restoreSuggestedActionState(
+  suggestedActions
+) {
+
+  if (!suggestedActions) {
+    return;
+  }
+
+  Object.entries(
+    suggestedActions
+  ).forEach(
+    function ([actionId, saved]) {
+
+      const row =
+        document.querySelector(
+          `tr[data-action-id="${actionId}"]`
+        );
+
+      if (!row) {
+        return;
+      }
+
+      const checkbox =
+        row.querySelector(
+          ".action-checkbox"
+        );
+
+      const inputs =
+        row.querySelectorAll(
+          ".plan-input"
+        );
+
+      if (checkbox) {
+        checkbox.checked =
+          Boolean(
+            saved.selected
+          );
+      }
+
+      if (inputs[0]) {
+        inputs[0].value =
+          saved.responsible || "";
+      }
+
+      if (inputs[1]) {
+        inputs[1].value =
+          saved.dueDate || "";
+      }
+
+    }
+  );
+
+}
+
+
+function clearCustomActionRows() {
+
+  if (customActions) {
+    customActions.innerHTML = "";
+  }
+
+}
+
+
+function restoreCustomActions(
+  actions
+) {
+
+  clearCustomActionRows();
+
+  if (!Array.isArray(actions)) {
+    return;
+  }
+
+  actions.forEach(
+    function (saved) {
+
+      addCustomActionRow();
+
+      const row =
+        customActions.lastElementChild;
+
+      if (!row) {
+        return;
+      }
+
+      const textarea =
+        row.querySelector("textarea");
+
+      const inputs =
+        row.querySelectorAll(
+          ".plan-input"
+        );
+
+      if (textarea) {
+        textarea.value =
+          saved.action || "";
+      }
+
+      if (inputs[0]) {
+        inputs[0].value =
+          saved.responsible || "";
+      }
+
+      if (inputs[1]) {
+        inputs[1].value =
+          saved.dueDate || "";
+      }
+
+    }
+  );
+
+}
+
+
+function validateCaseFile(data) {
+
+  if (
+    !data ||
+    typeof data !== "object"
+  ) {
+    throw new Error(
+      "This file does not contain a valid saved case."
+    );
+  }
+
+  if (
+    data._format !==
+    CASE_FILE_FORMAT
+  ) {
+    throw new Error(
+      "This JSON file is not a Bullying Response Planning Tool case file."
+    );
+  }
+
+  if (
+    data._version !==
+    CASE_FILE_VERSION
+  ) {
+    throw new Error(
+      `This case was created with version ${data._version || "unknown"}. This prototype currently opens Version ${CASE_FILE_VERSION} case files only.`
+    );
+  }
+
+  if (
+    !data.answers ||
+    typeof data.answers !== "object"
+  ) {
+    throw new Error(
+      "The saved case is missing questionnaire responses."
+    );
+  }
+
+}
+
+
+function restoreCaseFile(data) {
+
+  validateCaseFile(data);
+
+  restoreAnswers(
+    data.answers
+  );
+
+  const plan =
+    data.plan || {};
+
+  setElementValue(
+    "schoolName",
+    plan.schoolName
+  );
+  setElementValue(
+    "studentReference",
+    plan.studentReference
+  );
+  setElementValue(
+    "planDate",
+    plan.planDate
+  );
+  setElementValue(
+    "planLead",
+    plan.planLead
+  );
+  setElementValue(
+    "reviewDate",
+    plan.reviewDate
+  );
+  setElementValue(
+    "reviewLead",
+    plan.reviewLead
+  );
+
+  setCheckboxGroup(
+    "reviewOutcome",
+    plan.reviewOutcomes
+  );
+
+  if (
+    data.view === "actionPlan"
+  ) {
+
+    const actions =
+      buildSuggestedActions(
+        data.answers
+      );
+
+    buildActionPlan(
+      actions,
+      data.answers
+    );
+
+    restoreSuggestedActionState(
+      plan.suggestedActions
+    );
+
+    restoreCustomActions(
+      plan.customActions
+    );
+
+    if (landingPage) {
+      landingPage.classList.add(
+        "hidden"
+      );
+    }
+
+    if (questionnaire) {
+      questionnaire.classList.add(
+        "hidden"
+      );
+    }
+
+    if (actionPlan) {
+      actionPlan.classList.remove(
+        "hidden"
+      );
+    }
+
+    updateSelectedCount();
+
+  } else {
+
+    if (landingPage) {
+      landingPage.classList.add(
+        "hidden"
+      );
+    }
+
+    if (actionPlan) {
+      actionPlan.classList.add(
+        "hidden"
+      );
+    }
+
+    if (questionnaire) {
+      questionnaire.classList.remove(
+        "hidden"
+      );
+    }
+
+    const requestedSection =
+      Number(
+        data.currentSection
+      );
+
+    currentSection =
+      Number.isInteger(
+        requestedSection
+      ) &&
+      requestedSection >= 1 &&
+      requestedSection <= totalSections
+        ? requestedSection
+        : 1;
+
+    showSection(
+      currentSection
+    );
+
+  }
+
+  setDefaultPlanDate();
+  showToast("Case file opened successfully.");
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+async function openSelectedCaseFile(
+  file
+) {
+
+  if (!file) {
+    return;
+  }
+
+  try {
+
+    const text =
+      await file.text();
+
+    const data =
+      JSON.parse(text);
+
+    restoreCaseFile(data);
+
+  } catch (error) {
+
+    const message = error && error.message
+      ? error.message
+      : "The case file could not be opened.";
+    showToast(message, "error");
+
+  } finally {
+
+    if (caseFileInput) {
+      caseFileInput.value = "";
+    }
+
+  }
+
+}
+
+
+if (
+  openCaseButton &&
+  caseFileInput
+) {
+
+  openCaseButton.addEventListener(
+    "click",
+    function () {
+      caseFileInput.click();
+    }
+  );
+
+  caseFileInput.addEventListener(
+    "change",
+    function () {
+      openSelectedCaseFile(
+        this.files &&
+        this.files[0]
+      );
+    }
+  );
+
+}
+
+
+[
+  saveCaseQuestionnaireButton,
+  saveCasePlanButton
+].forEach(
+  function (button) {
+
+    if (!button) {
+      return;
+    }
+
+    button.addEventListener(
+      "click",
+      downloadCaseFile
+    );
+
+  }
+);
 
 
 // =====================================================
